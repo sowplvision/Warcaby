@@ -10,6 +10,7 @@ import java.net.Socket;
  */
 public class KlientGUI extends JFrame{
     private JPanel ustawieniaPolaczenia;
+    private Plansza plansza;
     private JTextField adresTF, portTF;
     private JButton polacz, rozlacz;
 
@@ -19,6 +20,7 @@ public class KlientGUI extends JFrame{
         setLayout(new BorderLayout());
 
         ustawieniaPolaczenia = new JPanel(new FlowLayout());
+        plansza = new Plansza();
 
         adresTF = new JTextField("localhost",10);
         portTF = new JTextField("2345",4);
@@ -40,6 +42,7 @@ public class KlientGUI extends JFrame{
         ustawieniaPolaczenia.add(rozlacz);
 
         add(ustawieniaPolaczenia, BorderLayout.NORTH);
+        add(plansza, BorderLayout.CENTER);
 
         pack();
         setVisible(true);
