@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,8 +12,10 @@ import java.util.Vector;
  * Created by Daniel K on 2017-06-05.
  */
 public class SerwerGUI extends JFrame{
-    private JPanel ustawieniaSerwera;
-    private JScrollPane log;
+    private JPanel ustawieniaSerwera, panelBoczny;
+    private LogPanel log;
+    private WynikiPanel wyniki;
+    private Plansza plansza;
     private JTextField portTF;
     private JTextArea logTA;
     private JButton polacz, zatrzymaj;
@@ -28,20 +29,19 @@ public class SerwerGUI extends JFrame{
         setLayout(new BorderLayout());
 
         ustawieniaSerwera = new JPanel(new FlowLayout());
-        log = new JScrollPane();
+        panelBoczny = new JPanel();
+        plansza = new Plansza();
+        log = new LogPanel();
+        wyniki = new WynikiPanel();
+
+        panelBoczny.setLayout(new BorderLayout());
 
         portTF = new JTextField("2345",4);
-        logTA = new JTextArea(10,10);
         polacz = new JButton("Uruchom serwer");
         zatrzymaj = new JButton("Zatrzymaj serwer");
+        logTA = log.getLogTA();
 
         zatrzymaj.setEnabled(false);
-
-        logTA.setLineWrap(true);
-        logTA.setEditable(false);
-        DefaultCaret caret = (DefaultCaret) logTA.getCaret();
-        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-        log.setViewportView(logTA);
 
         ObslugaZdarzen obslugaZdarzen = new ObslugaZdarzen();
 
@@ -53,10 +53,12 @@ public class SerwerGUI extends JFrame{
         ustawieniaSerwera.add(polacz);
         ustawieniaSerwera.add(zatrzymaj);
 
-        log.add(logTA);
+        panelBoczny.add(wyniki, BorderLayout.NORTH);
+        panelBoczny.add(log, BorderLayout.CENTER);
 
         add(ustawieniaSerwera,BorderLayout.NORTH);
-        add(logTA,BorderLayout.CENTER);
+        add(plansza, BorderLayout.CENTER);
+        add(panelBoczny,BorderLayout.EAST);
 
         pack();
         setVisible(true);
@@ -108,7 +110,7 @@ public class SerwerGUI extends JFrame{
                         throw new NumberFormatException();
                     }
                 } catch (NumberFormatException e){
-                    logTA.append("Błędna wartość w polu port. Używam portu domyślnego. \n");
+                    logTA.append("Błędna wartość w polu port.\nUżywam portu domyślnego.\n");
                     port = 2345;
                 }
                 serwer = new ServerSocket(port);
