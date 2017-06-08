@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
 /**
  * Created by Daniel K on 2017-06-05.
@@ -10,7 +9,6 @@ public class Plansza extends JPanel{
     private static final int liczbaWierszy = 8;
     private static final int liczbaKolumn = 8;
     private static final Dimension rozmiarPlanszy = new Dimension(rozmiarPola*liczbaKolumn,rozmiarPola*liczbaWierszy);
-    private List<PozycjaPionka> pionki;
 
     public Plansza(){
         setPreferredSize(rozmiarPlanszy);
@@ -19,12 +17,6 @@ public class Plansza extends JPanel{
     @Override
     public void paintComponent(Graphics g) {
         narysujPlansze(g);
-
-        /**
-        for(PozycjaPionka pozycjaPionka: pionki){
-
-        }
-         **/
     }
 
     public void narysujPlansze(Graphics g){
@@ -36,11 +28,5 @@ public class Plansza extends JPanel{
                 g.setColor((g.getColor() == Color.DARK_GRAY) ? Color.WHITE : Color.DARK_GRAY);
             }
         }
-    }
-
-    private class PozycjaPionka{
-        public Pionek pionek;
-        public int x;
-        public int y;
     }
 }

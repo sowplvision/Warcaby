@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
@@ -120,7 +119,7 @@ public class SerwerGUI extends JFrame{
                 while (uruchomiony) {
                     Socket socket = serwer.accept();
 
-                    logTA.append("Nowe połączenie:" + Inet4Address.getLocalHost() + "\n");
+                    logTA.append("Nowe połączenie:" + socket.getInetAddress() + "\n");
 
                     new Obsluga(socket).start();
                 }
