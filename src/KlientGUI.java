@@ -13,6 +13,7 @@ public class KlientGUI extends JFrame{
     private Plansza plansza;
     private JTextField adresTF, portTF;
     private JButton polacz, rozlacz;
+    private boolean polaczony = false;
 
     public KlientGUI(){
         setTitle("Klient warcabów");
@@ -103,17 +104,28 @@ public class KlientGUI extends JFrame{
                     port = 2345;
                 }
                 socket = new Socket(adres,port);
+
+                polaczony = true;
+
+                while (polaczony){
+                    //TODO
+                }
             } catch (IOException e) {
             } finally {
                 try {
-                    if(socket != null) socket.close();
+                    if(socket != null) {
+                        socket.close();
+                    }
                 } catch (IOException e) {}
             }
         }
 
         public void rozlacz(){
             try{
-                socket.close();
+                if(socket != null) {
+                    socket.close();
+                }
+                polaczony = false;
             } catch (IOException e) {}
         }
     }

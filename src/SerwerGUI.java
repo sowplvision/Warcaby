@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ConcurrentModificationException;
 import java.util.Vector;
 
 /**
@@ -70,12 +71,15 @@ public class SerwerGUI extends JFrame{
 
     private class ObslugaZdarzen implements ActionListener{
         private Serwer srw;
+        private KontrolaPolaczenia kontrolaPolaczenia;
 
         @Override
         public void actionPerformed(ActionEvent event) {
             if(event.getActionCommand().equals("Uruchom serwer")) {
                 srw = new Serwer();
                 srw.start();
+                kontrolaPolaczenia = new KontrolaPolaczenia();
+                kontrolaPolaczenia.start();
                 uruchomiony = true;
                 zatrzymaj.setEnabled(true);
                 polacz.setEnabled(false);
@@ -84,6 +88,7 @@ public class SerwerGUI extends JFrame{
             }
             if(event.getActionCommand().equals("Zatrzymaj serwer")){
                 srw.zatrzymaj();
+                kontrolaPolaczenia.interrupt();
                 uruchomiony = false;
                 zatrzymaj.setEnabled(false);
                 polacz.setEnabled(true);
@@ -118,6 +123,8 @@ public class SerwerGUI extends JFrame{
 
                 while (uruchomiony) {
                     Socket socket = serwer.accept();
+
+                    socket.setSoTimeout(1000);
 
                     logTA.append("Nowe połączenie:" + socket.getInetAddress() + "\n");
 
@@ -158,7 +165,35 @@ public class SerwerGUI extends JFrame{
 
         @Override
         public void run() {
-            //TODO
+            //TODO obsluga klienta kiedy polaczony
+        }
+    }
+
+    private class KontrolaPolaczenia extends Thread{
+
+        public KontrolaPolaczenia(){
+            setDaemon(true);
+        }
+
+        @Override
+        public void run() {
+            while(uruchomiony){
+                try {
+                    if (klienci != null) {
+                        for (Obsluga klient : klienci) {
+                            try {
+                                if (klient.socket.getInputStream().read() == -1) {
+                                    logTA.append("Połączenie zerwane.\n");
+                                    klienci.remove(klient);
+                                }
+                            } catch (IOException e) {}
+                        }
+                    }
+                    logTA.append("Połączonych klientów: " + klienci.size() + "\n");
+                    sleep(10000);
+                } catch (InterruptedException e){}
+                catch (ConcurrentModificationException e){}
+            }
         }
     }
 }
