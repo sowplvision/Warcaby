@@ -11,7 +11,7 @@ public class WynikiPanel extends JPanel{
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
-        setPreferredSize(new Dimension(0,50));
+        setPreferredSize(new Dimension(180,50));
 
         gracz1Wynik = new JTextField("0",2);
         gracz2Wynik = new JTextField("0",2);

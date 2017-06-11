@@ -20,21 +20,20 @@ public class SerwerGUI extends JFrame{
     private JTextArea logTA;
     private JButton polacz, zatrzymaj;
 
-    private Vector<Obsluga> klienci = new Vector<Obsluga>();
+    private Vector<Obsluga> klienci;
     private boolean uruchomiony = false;
 
     public SerwerGUI(){
         setTitle("Serwer warcabów");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+        setResizable(false);
 
         ustawieniaSerwera = new JPanel(new FlowLayout());
-        panelBoczny = new JPanel();
+        panelBoczny = new JPanel(new BorderLayout());
         plansza = new Plansza();
         log = new LogPanel();
         wyniki = new WynikiPanel();
-
-        panelBoczny.setLayout(new BorderLayout());
 
         portTF = new JTextField("2345",4);
         polacz = new JButton("Uruchom serwer");
@@ -76,6 +75,7 @@ public class SerwerGUI extends JFrame{
         @Override
         public void actionPerformed(ActionEvent event) {
             if(event.getActionCommand().equals("Uruchom serwer")) {
+                klienci = new Vector<Obsluga>();
                 srw = new Serwer();
                 srw.start();
                 kontrolaPolaczenia = new KontrolaPolaczenia();
@@ -159,7 +159,15 @@ public class SerwerGUI extends JFrame{
             this.socket = socket;
 
             synchronized (klienci){
-                klienci.add(this);
+                if(klienci.size()<2) {
+                    klienci.add(this);
+                }
+                else {
+                    logTA.append("Do serwera próbował dołączyć kolejny gracz.");
+                    try {
+                        socket.getInputStream().close();
+                    } catch (IOException e) {}
+                }
             }
         }
 
@@ -183,7 +191,7 @@ public class SerwerGUI extends JFrame{
                         for (Obsluga klient : klienci) {
                             try {
                                 if (klient.socket.getInputStream().read() == -1) {
-                                    logTA.append("Połączenie zerwane.\n");
+                                    logTA.append("Użytkownik rozłączył się.\n");
                                     klienci.remove(klient);
                                 }
                             } catch (IOException e) {}
