@@ -12,6 +12,7 @@ import java.util.Vector;
  * Created by Daniel K on 2017-06-05.
  */
 public class SerwerGUI extends JFrame{
+    //klasa tworzaca GUI serwera - elementy GUI
     private JPanel ustawieniaSerwera, panelBoczny;
     private LogPanel log;
     private WynikiPanel wyniki;
@@ -20,76 +21,101 @@ public class SerwerGUI extends JFrame{
     private JTextArea logTA;
     private JButton polacz, zatrzymaj;
 
+    //lista klientow w postaci obiektow
     private Vector<Obsluga> klienci;
+    //status serwera
     private boolean uruchomiony = false;
 
     public SerwerGUI(){
+        //tworzenie GUI
         setTitle("Serwer warcabów");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         setResizable(false);
 
+        //inicjalizacja paneli
         ustawieniaSerwera = new JPanel(new FlowLayout());
         panelBoczny = new JPanel(new BorderLayout());
         plansza = new Plansza();
         log = new LogPanel();
         wyniki = new WynikiPanel();
 
+        //inicjalizacja przyciskow i pol
         portTF = new JTextField("2345",4);
         polacz = new JButton("Uruchom serwer");
         zatrzymaj = new JButton("Zatrzymaj serwer");
         logTA = log.getLogTA();
 
+        //domyslnie serwer jest wylaczony wiec nie mozna go zatrzymywac ponownie
         zatrzymaj.setEnabled(false);
 
+        //oblsuga przyciskow uruchom-zatrzymaj
         ObslugaZdarzen obslugaZdarzen = new ObslugaZdarzen();
 
         polacz.addActionListener(obslugaZdarzen);
         zatrzymaj.addActionListener(obslugaZdarzen);
 
+        //panel gorny serwerowego GUI (port itd)
         ustawieniaSerwera.add(new Label("Port:"));
         ustawieniaSerwera.add(portTF);
         ustawieniaSerwera.add(polacz);
         ustawieniaSerwera.add(zatrzymaj);
 
+        //panel boczny (wyniki,log)
         panelBoczny.add(wyniki, BorderLayout.NORTH);
         panelBoczny.add(log, BorderLayout.CENTER);
 
+        //dodawanie komponentow do okienka
         add(ustawieniaSerwera,BorderLayout.NORTH);
         add(plansza, BorderLayout.CENTER);
         add(panelBoczny,BorderLayout.EAST);
 
+        //dopasowanie rozmiaru okna do zawartosci oraz jego ujawnienie
         pack();
         setVisible(true);
     }
 
     public static void main(String[] args) {
 
+        //wyrazenie lambda - nowy watek dla GUI
         new Thread(() -> new SerwerGUI()).run();
     }
 
     private class ObslugaZdarzen implements ActionListener{
+        //klasa nasluchujaca i obslugujaca przyciski uruchom - zatrzymaj
         private Serwer srw;
         private KontrolaPolaczenia kontrolaPolaczenia;
 
         @Override
         public void actionPerformed(ActionEvent event) {
             if(event.getActionCommand().equals("Uruchom serwer")) {
+                //po nacisnieciu przycisku uruchom utworz nowa liste klientow
                 klienci = new Vector<Obsluga>();
+
+                //uruchom serwer
                 srw = new Serwer();
                 srw.start();
+                uruchomiony = true;
+
+                //kontroluj klientow czy dalej sa polaczeni
                 kontrolaPolaczenia = new KontrolaPolaczenia();
                 kontrolaPolaczenia.start();
-                uruchomiony = true;
+
+                //wylacz elementy GUI odpowiedzialne za uruchamianie serwera
                 zatrzymaj.setEnabled(true);
                 polacz.setEnabled(false);
                 portTF.setEnabled(false);
                 repaint();
             }
             if(event.getActionCommand().equals("Zatrzymaj serwer")){
+                //po nacisnieciu przycisku zatrzymaj serwer
                 srw.zatrzymaj();
-                kontrolaPolaczenia.interrupt();
                 uruchomiony = false;
+
+                //zatrzymaj watek demoniczny
+                kontrolaPolaczenia.interrupt();
+
+                //wlacz ponownie GUI odpowiedzialne za uruchamianie serwera
                 zatrzymaj.setEnabled(false);
                 polacz.setEnabled(true);
                 portTF.setEnabled(true);
@@ -99,49 +125,60 @@ public class SerwerGUI extends JFrame{
     }
 
     private class Serwer extends Thread{
+        //klasa tworzaca socket serwera oraz watki do obslugi nowych klientow - obsluguje klientow (wszystkich naraz)
         private ServerSocket serwer;
         private int port;
 
         @Override
         public void run() {
+            //uruchamiam serwer - wyczysc log dla nowej sesji serwera
             logTA.setText("");
             try {
                 try {
+                    //sprawdz czy wartosc pola port jest liczba z zakresu dozwolonego dla portow
                     if(Integer.parseInt(portTF.getText())>=0 && Integer.parseInt(portTF.getText())<=65535){
                         port = Integer.parseInt(portTF.getText());
                     }
+                    //jezeli nie jest liczba lub przekracza zakres wyrzuc wyjatek
                     else{
                         throw new NumberFormatException();
                     }
                 } catch (NumberFormatException e){
+                    //poinformuj klienta o blednym porcie oraz uzyj portu 2345 jako domyslnego
                     logTA.append("Błędna wartość w polu port.\nUżywam portu domyślnego.\n");
                     port = 2345;
                 }
+                //inicjalizacja serwera
                 serwer = new ServerSocket(port);
 
                 logTA.append("Serwer uruchomiony na porcie: " + port + "\n");
 
                 while (uruchomiony) {
+                    //jezeli serwer uruchomiony akceptuj nowe polaczenia
                     Socket socket = serwer.accept();
-
-                    socket.setSoTimeout(1000);
 
                     logTA.append("Nowe połączenie:" + socket.getInetAddress() + "\n");
 
+                    //nowy watek polaczenia dla nowego klienta
                     new Obsluga(socket).start();
                 }
             } catch (IOException e) {
             } finally {
                 try{
+                    //alternatywne zamkniecie serwera w przypadku wystapienia wyjatku w trakcie akceptowania polaczen
                     if(serwer != null) serwer.close();
                 } catch (IOException e) {}
             }
         }
+
         public void zatrzymaj(){
+            //metoda do obslugi przycisku zatrzymaj
             try{
+                //zatrzymaj przychodzace polaczenia
                 serwer.close();
                 logTA.append("Serwer zatrzymany.\n");
 
+                //rozlacz z kazdym klientem z listy
                 for (Obsluga klient: klienci){
                     try{
                         klient.socket.close();
@@ -153,18 +190,22 @@ public class SerwerGUI extends JFrame{
     }
 
     private class Obsluga extends Thread{
+        //klasa obslugujaca pojedynczego klienta
         private Socket socket;
 
         public Obsluga(Socket socket){
             this.socket = socket;
 
             synchronized (klienci){
+                //sprawdz czy polaczonych jest juz 2 klientow jeśli tak rozlacz z kolejnym klientem
                 if(klienci.size()<2) {
+                    //dodaj klienta do listy - obiekt
                     klienci.add(this);
                 }
                 else {
                     logTA.append("Do serwera próbował dołączyć kolejny gracz.");
                     try {
+                        //wywola to blad u klienta nr 3 i przerwie jego polaczenie
                         socket.getInputStream().close();
                     } catch (IOException e) {}
                 }
@@ -173,7 +214,7 @@ public class SerwerGUI extends JFrame{
 
         @Override
         public void run() {
-            //TODO obsluga klienta kiedy polaczony
+            //TODO obsluga klienta kiedy polaczony tutaj ma odbywac sie calosc gry w warcaby i komunikacji miedzy klientami
         }
     }
 
