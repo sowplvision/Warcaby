@@ -3,6 +3,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 /**
@@ -152,6 +154,10 @@ public class KlientGUI extends JFrame{
                 repaint();
 
                 czatTA.append("Witamy na serwerze warcabów.\n");
+
+                //otwarcie strumieni wejscia-wyjscia
+                ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
                 while (polaczony){
                     //TODO co klient ma robic kiedy jest polaczony
