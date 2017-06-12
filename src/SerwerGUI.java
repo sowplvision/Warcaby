@@ -17,10 +17,14 @@ public class SerwerGUI extends JFrame{
     private JLabel liczbaGraczy;
     private LogPanel log;
     private WynikiPanel wyniki;
-    private PlanszaPanel plansza;
+    private PlanszaPanel planszaGUI;
     private JTextField portTF;
     private JTextArea logTA;
     private JButton polacz, zatrzymaj;
+
+    //elementy gry
+    private Gra warcaby;
+    private Rozgrywka rozgrywka;
 
     //lista klientow w postaci obiektow
     private Vector<Obsluga> klienci;
@@ -34,10 +38,14 @@ public class SerwerGUI extends JFrame{
         setLayout(new BorderLayout());
         setResizable(false);
 
+        //inicjalizacja gry
+        warcaby = new Gra();
+        rozgrywka = new Rozgrywka();
+
         //inicjalizacja paneli
         ustawieniaSerwera = new JPanel(new FlowLayout());
         panelBoczny = new JPanel(new BorderLayout());
-        plansza = new PlanszaPanel();
+        planszaGUI = new PlanszaPanel();
         log = new LogPanel();
         wyniki = new WynikiPanel();
         liczbaUzytkownikow = new JPanel();
@@ -75,7 +83,7 @@ public class SerwerGUI extends JFrame{
 
         //dodawanie komponentow do okienka
         add(ustawieniaSerwera,BorderLayout.NORTH);
-        add(plansza, BorderLayout.CENTER);
+        add(planszaGUI, BorderLayout.CENTER);
         add(panelBoczny,BorderLayout.EAST);
 
         //dopasowanie rozmiaru okna do zawartosci oraz jego ujawnienie
@@ -224,6 +232,27 @@ public class SerwerGUI extends JFrame{
         @Override
         public void run() {
             //TODO obsluga klienta kiedy polaczony tutaj ma odbywac sie calosc gry w warcaby i komunikacji miedzy klientami
+            while (uruchomiony) {
+                //dopoki nie ma 2 klientow to czekaj
+                while (klienci.size() < 2) {
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                    }
+                }
+                //jesli polaczylo sie 2 graczy rozpocznij nowa gre
+                rozgrywka.setPionki(warcaby.nowaGra());
+                planszaGUI.setPionki(rozgrywka.getPionki());
+                logTA.append("Rozpoczyna się nowa rozgrywka.\n");
+                repaint();
+
+                while (klienci.size() == 2) {
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
         }
     }
 
