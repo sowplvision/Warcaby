@@ -18,6 +18,7 @@ public class LogPanel extends JScrollPane{
 
         //podazanie za ostatnia linia
         logTA.setLineWrap(true);
+        logTA.setWrapStyleWord(true);
         logTA.setEditable(false);
         DefaultCaret caret = (DefaultCaret) logTA.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);

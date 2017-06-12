@@ -13,10 +13,11 @@ import java.util.Vector;
  */
 public class SerwerGUI extends JFrame{
     //klasa tworzaca GUI serwera - elementy GUI
-    private JPanel ustawieniaSerwera, panelBoczny;
+    private JPanel ustawieniaSerwera, panelBoczny, liczbaUzytkownikow;
+    private JLabel liczbaGraczy;
     private LogPanel log;
     private WynikiPanel wyniki;
-    private Plansza plansza;
+    private PlanszaPanel plansza;
     private JTextField portTF;
     private JTextArea logTA;
     private JButton polacz, zatrzymaj;
@@ -36,15 +37,17 @@ public class SerwerGUI extends JFrame{
         //inicjalizacja paneli
         ustawieniaSerwera = new JPanel(new FlowLayout());
         panelBoczny = new JPanel(new BorderLayout());
-        plansza = new Plansza();
+        plansza = new PlanszaPanel();
         log = new LogPanel();
         wyniki = new WynikiPanel();
+        liczbaUzytkownikow = new JPanel();
 
         //inicjalizacja przyciskow i pol
         portTF = new JTextField("2345",4);
         polacz = new JButton("Uruchom serwer");
         zatrzymaj = new JButton("Zatrzymaj serwer");
         logTA = log.getLogTA();
+        liczbaGraczy = new JLabel("0");
 
         //domyslnie serwer jest wylaczony wiec nie mozna go zatrzymywac ponownie
         zatrzymaj.setEnabled(false);
@@ -61,9 +64,14 @@ public class SerwerGUI extends JFrame{
         ustawieniaSerwera.add(polacz);
         ustawieniaSerwera.add(zatrzymaj);
 
+        //liczba uzytkownikow
+        liczbaUzytkownikow.add(new JLabel("Liczba użytkowników: "));
+        liczbaUzytkownikow.add(liczbaGraczy);
+
         //panel boczny (wyniki,log)
         panelBoczny.add(wyniki, BorderLayout.NORTH);
-        panelBoczny.add(log, BorderLayout.CENTER);
+        panelBoczny.add(liczbaUzytkownikow, BorderLayout.CENTER);
+        panelBoczny.add(log, BorderLayout.SOUTH);
 
         //dodawanie komponentow do okienka
         add(ustawieniaSerwera,BorderLayout.NORTH);
@@ -201,12 +209,13 @@ public class SerwerGUI extends JFrame{
                 if(klienci.size()<2) {
                     //dodaj klienta do listy - obiekt
                     klienci.add(this);
+                    liczbaGraczy.setText("" + klienci.size());
                 }
                 else {
-                    logTA.append("Do serwera próbował dołączyć kolejny gracz.");
+                    logTA.append("Do serwera próbował dołączyć kolejny gracz.\n");
                     try {
                         //wywola to blad u klienta nr 3 i przerwie jego polaczenie
-                        socket.getInputStream().close();
+                        socket.close();
                     } catch (IOException e) {}
                 }
             }
@@ -228,18 +237,16 @@ public class SerwerGUI extends JFrame{
         public void run() {
             while(uruchomiony){
                 try {
-                    if (klienci != null) {
-                        for (Obsluga klient : klienci) {
-                            try {
-                                if (klient.socket.getInputStream().read() == -1) {
-                                    logTA.append("Użytkownik rozłączył się.\n");
-                                    klienci.remove(klient);
-                                }
-                            } catch (IOException e) {}
-                        }
+                    for (Obsluga klient : klienci) {
+                        try {
+                            if (klient.socket.getInputStream().read() == -1) {
+                                logTA.append("Użytkownik rozłączył się.\n");
+                                klienci.remove(klient);
+                                liczbaGraczy.setText("" + klienci.size());
+                            }
+                        } catch (IOException e) {}
                     }
-                    logTA.append("Połączonych klientów: " + klienci.size() + "\n");
-                    sleep(10000);
+                    sleep(1000);
                 } catch (InterruptedException e){}
                 catch (ConcurrentModificationException e){}
             }

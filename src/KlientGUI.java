@@ -13,10 +13,10 @@ public class KlientGUI extends JFrame{
     private JPanel ustawieniaPolaczenia, panelBoczny, statusPolaczenia;
     private JTextArea czatTA;
     private JLabel polaczonyLabel;
-    private Plansza plansza;
+    private PlanszaPanel plansza;
     private WynikiPanel wyniki;
     private CzatPanel czat;
-    private JTextField adresTF, portTF;
+    private JTextField adresTF, portTF, czatTF;
     private JButton polacz, rozlacz;
 
     //status polaczenia
@@ -33,7 +33,7 @@ public class KlientGUI extends JFrame{
         ustawieniaPolaczenia = new JPanel(new FlowLayout());
         panelBoczny = new JPanel(new BorderLayout());
         statusPolaczenia = new JPanel();
-        plansza = new Plansza();
+        plansza = new PlanszaPanel();
         wyniki = new WynikiPanel();
         czat = new CzatPanel();
 
@@ -44,6 +44,7 @@ public class KlientGUI extends JFrame{
         rozlacz = new JButton("Rozłącz");
         polaczonyLabel = new JLabel("OFFLINE");
         czatTA = czat.getCzatTA();
+        czatTF = czat.getCzatTF();
 
         //domyslnie klient jest rozlaczony
         rozlacz.setEnabled(false);
@@ -154,6 +155,12 @@ public class KlientGUI extends JFrame{
 
                 while (polaczony){
                     //TODO co klient ma robic kiedy jest polaczony
+                    //tymczasowe do usuniecia po wykonaniu - aby nie przeciazac pamieci
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             } catch (IOException e) {
                 //jezeli nie udalo sie nawiazac polaczenia

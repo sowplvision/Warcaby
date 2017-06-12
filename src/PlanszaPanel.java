@@ -4,7 +4,7 @@ import java.awt.*;
 /**
  * Created by Daniel K on 2017-06-05.
  */
-public class Plansza extends JPanel{
+public class PlanszaPanel extends JPanel{
     //klasa tworzaca plansze - rozmiar pola zalezny jest od rozmiaru pionka
     private static final int rozmiarPola = (int) (Pionek.getRozmiarPionka() * 1.25);
     //liczba wierszy i kolumn szachownicy
@@ -13,7 +13,7 @@ public class Plansza extends JPanel{
     //rozmiar calej planszy wyliczany na podstawie rozmiarow pol i liczby wierszy i kolumn
     private static final Dimension rozmiarPlanszy = new Dimension(rozmiarPola*liczbaKolumn,rozmiarPola*liczbaWierszy);
 
-    public Plansza(){
+    public PlanszaPanel(){
         //ustaw rozmiar panelu na rozmiar planszy
         setPreferredSize(rozmiarPlanszy);
     }

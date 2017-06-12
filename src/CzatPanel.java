@@ -26,6 +26,7 @@ public class CzatPanel extends JPanel {
 
         //zachowanie pola czatu i podazanie za ostatnia linia pojawiajaca sie na czacie
         czatTA.setLineWrap(true);
+        czatTA.setWrapStyleWord(true);
         czatTA.setEditable(false);
         DefaultCaret caret = (DefaultCaret) czatTA.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
