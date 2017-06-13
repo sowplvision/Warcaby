@@ -1,3 +1,5 @@
+package Old;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -240,18 +242,26 @@ public class SerwerGUI extends JFrame{
                     } catch (InterruptedException e) {
                     }
                 }
+
                 //jesli polaczylo sie 2 graczy rozpocznij nowa gre
                 rozgrywka.setPionki(warcaby.nowaGra());
                 planszaGUI.setPionki(rozgrywka.getPionki());
                 logTA.append("Rozpoczyna się nowa rozgrywka.\n");
                 repaint();
 
-                while (klienci.size() == 2) {
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException e) {
-                    }
+                /**
+                while (!warcaby.czyZakonczona()) {
+                    try{
+                        ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+                        ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+
+                        objectOutputStream.flush();
+
+                        objectOutputStream.writeObject(rozgrywka);
+
+                    } catch (IOException e){}
                 }
+                 */
             }
         }
     }

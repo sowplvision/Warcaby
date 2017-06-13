@@ -1,13 +1,14 @@
+package Komponenty;
+
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by Daniel K on 2017-06-05.
+ * Created by Daniel K on 2017-06-13.
  */
-public class Pionek extends JComponent{
-    //klasa tworzaca pojedynczy pionek
+public class Pionek extends JComponent {
     private static final int rozmiarPionka = 48;
-    private int x, y;
+    private int x,y;
     private String typ;
     private Color kolorBazowy, kolorDodatkowy;
 
@@ -17,7 +18,7 @@ public class Pionek extends JComponent{
         this.typ = typ;
     }
 
-    public void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g){
         if(typ.contains("pionek")) {
             if (typ.equals("Czarny_pionek")) {
                 kolorBazowy = Color.black;

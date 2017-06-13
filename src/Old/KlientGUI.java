@@ -1,10 +1,10 @@
+package Old;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 /**
@@ -15,7 +15,7 @@ public class KlientGUI extends JFrame{
     private JPanel ustawieniaPolaczenia, panelBoczny, statusPolaczenia;
     private JTextArea czatTA;
     private JLabel polaczonyLabel;
-    private PlanszaPanel plansza;
+    private PlanszaPanel planszaGUI;
     private WynikiPanel wyniki;
     private CzatPanel czat;
     private JTextField adresTF, portTF, czatTF;
@@ -35,7 +35,7 @@ public class KlientGUI extends JFrame{
         ustawieniaPolaczenia = new JPanel(new FlowLayout());
         panelBoczny = new JPanel(new BorderLayout());
         statusPolaczenia = new JPanel();
-        plansza = new PlanszaPanel();
+        planszaGUI = new PlanszaPanel();
         wyniki = new WynikiPanel();
         czat = new CzatPanel();
 
@@ -77,7 +77,7 @@ public class KlientGUI extends JFrame{
 
         //dodaj kompnenty do okna
         add(ustawieniaPolaczenia, BorderLayout.NORTH);
-        add(plansza, BorderLayout.CENTER);
+        add(planszaGUI, BorderLayout.CENTER);
         add(panelBoczny, BorderLayout.EAST);
 
         //dopasuj rozmiar okna do zawartosci i pokaz okno
@@ -155,12 +155,22 @@ public class KlientGUI extends JFrame{
 
                 czatTA.append("Witamy na serwerze warcabów.\n");
 
-                //otwarcie strumieni wejscia-wyjscia
-                ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-
                 while (polaczony){
                     //TODO co klient ma robic kiedy jest polaczony
+
+                    /**
+                    try{
+                        ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+                        ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+
+                        Old.Rozgrywka rozgrywka = (Old.Rozgrywka) objectInputStream.readObject();
+                        planszaGUI.setPionki(rozgrywka.getPionki());
+                        repaint();
+
+                    } catch (IOException e){
+                    } catch (ClassNotFoundException e){}
+                     */
+
                     //tymczasowe do usuniecia po wykonaniu - aby nie przeciazac pamieci
                     try {
                         sleep(1000);
