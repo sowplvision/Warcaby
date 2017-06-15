@@ -33,6 +33,8 @@ public class Plansza extends JComponent implements MouseListener {
                 pionki[x][y] = 0;
             }
         }
+
+        addMouseListener(this);
     }
 
     @Override
@@ -128,7 +130,8 @@ public class Plansza extends JComponent implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-
+        //przykladowe pobieranie pola
+        System.out.println("X: "+ (e.getX()/rozmiarPola) + " Y:" + (e.getY()/rozmiarPola));
     }
 
     @Override
