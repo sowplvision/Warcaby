@@ -200,6 +200,7 @@ public class Serwer extends JFrame{
         private boolean polaczony = false;
         private ObjectInputStream ois;
         private ObjectOutputStream oos;
+        private String kolorGracza = "TEST1";
 
         public Client(Socket socket){
             this.socket = socket;
@@ -217,19 +218,21 @@ public class Serwer extends JFrame{
                 oos = new ObjectOutputStream(socket.getOutputStream());
                 ois = new ObjectInputStream(socket.getInputStream());
 
+                klienci.trimToSize();
+
                 while (uruchomiony && polaczony) {
                     try {
 
                         pakiet = (Pakiet) ois.readObject();
 
+                        System.out.println(pakiet.getKomenda());
+
                         oos.flush();
 
                         if (pakiet.getKomenda().equals(LOGIN)) {
-                            if(klienci.size() < 2) {
-                                pakiet.setKomenda(NONE);
-                            }
                             if(klienci.size() == 2){
-                                pakiet.setKomenda(GAMESTART);
+                                pakiet.setKomenda(GAME_START);
+                                pakiet.setPionki(warcaby.getPionki());
                             }
 
                             if(klienci.size() > 2){
@@ -240,22 +243,32 @@ public class Serwer extends JFrame{
 
                         if (pakiet.getKomenda().equals(LOGOUT)) {
                             synchronized (klienci){
+                                polaczony = false;
+                                log.append("Rozłączono z użytkownikiem.\n");
                                 klienci.remove(this);
                                 uzytkownicy.setText("" + klienci.size());
                             }
                             oos.writeObject(pakiet);
                         }
 
-                        if (pakiet.getKomenda().equals(GAMESTART)) {
-                            pakiet.setPionki(warcaby.nowaGra());
-                            oos.writeObject(pakiet);
+                        if (pakiet.getKomenda().equals(GAME_START)) {
+                            for(Client klient: klienci) {
+                                pakiet.setPionki(warcaby.nowaGra());
+                                klient.oos.writeObject(pakiet);
+                            }
                         }
 
-                        if (pakiet.getKomenda().equals(ENDOFGAME)) {
+                        if (pakiet.getKomenda().equals(END_OF_GAME)) {
 
                         }
 
-                        pakiet.setKomenda(NONE);
+                        if (pakiet.getKomenda().equals(CHECKER_MOVE)) {
+
+                        }
+
+                        if (pakiet.getKomenda().equals(WAITING_FOR_MOVE)) {
+
+                        }
                     } catch (IOException e){
                     } catch (ClassNotFoundException e){}
                 }

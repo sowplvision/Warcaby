@@ -115,11 +115,10 @@ public class Klient extends JFrame{
                 repaint();
             }
             if(event.getActionCommand().equals("Rozłącz")){
-
-                pakiet.setKomenda(LOGOUT);
-
                 //przerwij polaczenie
                 obsluga.kill();
+
+                pakiet.setKomenda(LOGOUT);
 
                 //zmien stan GUI
                 adres.setEnabled(true);
@@ -178,20 +177,31 @@ public class Klient extends JFrame{
 
                         pakiet = (Pakiet) ois.readObject();
 
+                        System.out.println(pakiet.getKomenda());
+
                         if(pakiet.getKomenda().equals(LOGIN)){
-                            kolorGracza = pakiet.getKolorGracza();
+
                         }
 
                         if (pakiet.getKomenda().equals(LOGOUT)) {
                             polaczony = false;
                         }
 
-                        if (pakiet.getKomenda().equals(ENDOFGAME)) {
+                        if (pakiet.getKomenda().equals(END_OF_GAME)) {
 
                         }
 
-                        if (pakiet.getKomenda().equals(GAMESTART)) {
+                        if (pakiet.getKomenda().equals(CHECKER_MOVE)) {
+
+                        }
+
+                        if (pakiet.getKomenda().equals(WAITING_FOR_MOVE)) {
+
+                        }
+
+                        if (pakiet.getKomenda().equals(GAME_START)) {
                             warcaby.setPionki(pakiet.getPionki());
+                            kolorGracza = pakiet.getKolorGracza();
                             repaint();
                         }
 
@@ -203,14 +213,16 @@ public class Klient extends JFrame{
             } catch (UnknownHostException e) {
             } catch (IOException e) {
             } finally {
+                /**
                 try {
                     ois.close();
                     oos.close();
                     socket.close();
 
-                    System.out.println("Rozłączono");
+                    kill();
                 } catch (IOException e) {
                 }
+                 */
             }
         }
 
