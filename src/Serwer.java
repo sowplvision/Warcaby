@@ -106,10 +106,10 @@ public class Serwer extends JFrame{
         public void actionPerformed(ActionEvent event) {
             if(event.getActionCommand().equals("Uruchom serwer")) {
                 //uruchom serwer
+                uruchomiony = true;
+                warcaby.nowaGra();
                 server = new Server();
                 server.start();
-                uruchomiony = true;
-
                 //wyczysc liste
                 klienci = new Vector<Client>();
                 uzytkownicy.setText("" + klienci.size());
@@ -169,15 +169,6 @@ public class Serwer extends JFrame{
 
                     //nowy watek polaczenia dla nowego klienta
                     new Client(socket).start();
-
-                    //gra rozpoczyna się
-                    if (pakiet.getKomenda().equals(GAME_START)) {
-                        for(Client klient: klienci) {
-                            pakiet.setPionki(warcaby.nowaGra());
-                            klient.oos.writeObject(pakiet);
-                        }
-                        pakiet.setKomenda(NONE);
-                    }
                 }
             } catch (IOException e) {
             } finally {
@@ -213,7 +204,7 @@ public class Serwer extends JFrame{
         private boolean polaczony = false;
         private ObjectInputStream ois;
         private ObjectOutputStream oos;
-        private String kolorGracza = "TEST1";
+        private String kolorGracza = "TEST";
 
         public Client(Socket socket){
             this.socket = socket;
@@ -230,8 +221,7 @@ public class Serwer extends JFrame{
             try {
                 oos = new ObjectOutputStream(socket.getOutputStream());
                 ois = new ObjectInputStream(socket.getInputStream());
-
-                klienci.trimToSize();
+                oos.flush();
 
                 while (uruchomiony && polaczony) {
                     try {
@@ -242,23 +232,25 @@ public class Serwer extends JFrame{
                         //chwilowe nasluchowanie komendy
                         System.out.println(pakiet.getKomenda());
 
-                        oos.flush();
-
                         //otrzymano polecenie logi
                         if (pakiet.getKomenda().equals(LOGIN)) {
                             //jesli jest 2 graczy
                             if(klienci.size() == 2){
+                                //gra rozpoczyna się
                                 pakiet.setKomenda(GAME_START);
                                 pakiet.setPionki(warcaby.getPionki());
+                                for (Client klient : klienci) {
+                                    klient.oos.writeObject(pakiet);
+                                    klient.oos.flush();
+                                }
                             }
 
                             //kazdy nadmiarowy gracz
                             if(klienci.size() > 2){
                                 pakiet.setKomenda(LOGOUT);
-                            }
-
-                            //wyslij pakiet
-                            oos.writeObject(pakiet);
+                                oos.writeObject(pakiet);
+                                oos.flush();
+                            }               
                         }
 
                         //polecenie logout

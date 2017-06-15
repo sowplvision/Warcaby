@@ -166,26 +166,19 @@ public class Klient extends JFrame{
                 statusPolaczenia.setForeground(Color.GREEN);
                 statusPolaczenia.setText("ONLINE");
 
-                ois = new ObjectInputStream(socket.getInputStream());
                 oos = new ObjectOutputStream(socket.getOutputStream());
-
+                ois = new ObjectInputStream(socket.getInputStream());
+                //wyslij pakiet
+                oos.writeObject(pakiet);
+                oos.flush();
+               
+                pakiet = null;
                 while (polaczony){
                     try {
-                        oos.flush();
-
-                        //wyslij pakiet
-                        oos.writeObject(pakiet);
-
-                        //odbierz pakiet
                         pakiet = (Pakiet) ois.readObject();
 
                         //chwilowe nasluchiwanie komend
                         System.out.println(pakiet.getKomenda());
-
-                        //polecenie login
-                        if(pakiet.getKomenda().equals(LOGIN)){
-                            oos.writeObject(pakiet);
-                        }
 
                         //polecenie logout
                         if (pakiet.getKomenda().equals(LOGOUT)) {
