@@ -8,6 +8,9 @@ import java.io.Serializable;
 public class Pakiet implements Serializable {
     private int[][] pionki;
     private String komenda;
+    private int wynikGracza1;
+    private int wynikGracza2;
+    private String kolorGracza;
 
     public Pakiet(){
 
@@ -40,5 +43,29 @@ public class Pakiet implements Serializable {
 
     public void setKomenda(String komenda) {
         this.komenda = komenda;
+    }
+
+    public int getWynikGracza1() {
+        return wynikGracza1;
+    }
+
+    public int getWynikGracza2() {
+        return wynikGracza2;
+    }
+
+    public void setWynikGracza1(int wynikGracza1) {
+        this.wynikGracza1 = wynikGracza1;
+    }
+
+    public void setWynikGracza2(int wynikGracza2) {
+        this.wynikGracza2 = wynikGracza2;
+    }
+
+    public String getKolorGracza() {
+        return kolorGracza;
+    }
+
+    public void setKolorGracza(String kolorGracza) {
+        this.kolorGracza = kolorGracza;
     }
 }

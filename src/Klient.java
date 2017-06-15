@@ -22,7 +22,7 @@ public class Klient extends JFrame{
     private JLabel statusPolaczenia;
 
     private Plansza warcaby;
-    private Pakiet plansza;
+    private Pakiet pakiet = new Pakiet();
 
     private boolean polaczony = false;
 
@@ -105,6 +105,8 @@ public class Klient extends JFrame{
                 obsluga = new ObslugaKlienta();
                 obsluga.start();
 
+                pakiet.setKomenda(LOGIN);
+
                 //zmien stan GUI
                 adres.setEnabled(false);
                 port.setEnabled(false);
@@ -113,6 +115,9 @@ public class Klient extends JFrame{
                 repaint();
             }
             if(event.getActionCommand().equals("Rozłącz")){
+
+                pakiet.setKomenda(LOGOUT);
+
                 //przerwij polaczenie
                 obsluga.kill();
 
@@ -132,6 +137,7 @@ public class Klient extends JFrame{
         private String adresSerwera;
         private ObjectInputStream ois;
         private ObjectOutputStream oos;
+        private String kolorGracza;
 
         @Override
         public void run() {
@@ -165,22 +171,46 @@ public class Klient extends JFrame{
                 oos = new ObjectOutputStream(socket.getOutputStream());
 
                 while (polaczony){
+                    try {
+                        oos.flush();
 
-                    oos.flush();
+                        oos.writeObject(pakiet);
 
-                    plansza = (Pakiet) ois.readObject();
-                    warcaby.setPionki(plansza.getPionki());
-                    repaint();
+                        pakiet = (Pakiet) ois.readObject();
 
-                    oos.writeObject(plansza);
+                        if(pakiet.getKomenda().equals(LOGIN)){
+                            kolorGracza = pakiet.getKolorGracza();
+                        }
 
+                        if (pakiet.getKomenda().equals(LOGOUT)) {
+                            polaczony = false;
+                        }
+
+                        if (pakiet.getKomenda().equals(ENDOFGAME)) {
+
+                        }
+
+                        if (pakiet.getKomenda().equals(GAMESTART)) {
+                            warcaby.setPionki(pakiet.getPionki());
+                            repaint();
+                        }
+
+
+                    } catch (IOException e){
+                    } catch (ClassNotFoundException e){
+                    }
                 }
-                ois.close();
-                oos.close();
-                socket.close();
             } catch (UnknownHostException e) {
             } catch (IOException e) {
-            } catch (ClassNotFoundException e){
+            } finally {
+                try {
+                    ois.close();
+                    oos.close();
+                    socket.close();
+
+                    System.out.println("Rozłączono");
+                } catch (IOException e) {
+                }
             }
         }
 

@@ -6,4 +6,8 @@ package Komponenty;
 public interface Protokol {
     public static final String LOGIN = "LOGIN";
     public static final String LOGOUT = "LOGOUT";
+    public static final String ENDOFGAME = "ENDGAME";
+    public static final String GAMESTART = "GAMESTART";
+    public static final String CHECKERMOVE = "MOVE";
+    public static final String NONE = "NONE";
 }

@@ -29,7 +29,7 @@ public class Serwer extends JFrame{
     //status serwera
     private boolean uruchomiony = false;
 
-    private Pakiet plansza = new Pakiet();
+    private Pakiet pakiet = new Pakiet();
     private Plansza warcaby = new Plansza();
 
     public Serwer(){
@@ -197,11 +197,13 @@ public class Serwer extends JFrame{
 
     private class Client extends Thread implements Protokol{
         private Socket socket;
+        private boolean polaczony = false;
         private ObjectInputStream ois;
         private ObjectOutputStream oos;
 
         public Client(Socket socket){
             this.socket = socket;
+            polaczony = true;
 
             synchronized (klienci){
                 klienci.add(this);
@@ -212,31 +214,60 @@ public class Serwer extends JFrame{
         @Override
         public void run() {
             try {
-                warcaby = new Plansza();
-                plansza.setPionki(warcaby.nowaGra());
-
                 oos = new ObjectOutputStream(socket.getOutputStream());
                 ois = new ObjectInputStream(socket.getInputStream());
 
-                while (uruchomiony) {
+                while (uruchomiony && polaczony) {
                     try {
+
+                        pakiet = (Pakiet) ois.readObject();
+
                         oos.flush();
 
-                        oos.writeObject(plansza);
+                        if (pakiet.getKomenda().equals(LOGIN)) {
+                            if(klienci.size() < 2) {
+                                pakiet.setKomenda(NONE);
+                            }
+                            if(klienci.size() == 2){
+                                pakiet.setKomenda(GAMESTART);
+                            }
 
-                        plansza = (Pakiet) ois.readObject();
+                            if(klienci.size() > 2){
+                                pakiet.setKomenda(LOGOUT);
+                            }
+                            oos.writeObject(pakiet);
+                        }
 
+                        if (pakiet.getKomenda().equals(LOGOUT)) {
+                            synchronized (klienci){
+                                klienci.remove(this);
+                                uzytkownicy.setText("" + klienci.size());
+                            }
+                            oos.writeObject(pakiet);
+                        }
+
+                        if (pakiet.getKomenda().equals(GAMESTART)) {
+                            pakiet.setPionki(warcaby.nowaGra());
+                            oos.writeObject(pakiet);
+                        }
+
+                        if (pakiet.getKomenda().equals(ENDOFGAME)) {
+
+                        }
+
+                        pakiet.setKomenda(NONE);
                     } catch (IOException e){
                     } catch (ClassNotFoundException e){}
                 }
-                ois.close();
-                oos.close();
-                socket.close();
+
             } catch (IOException e) {
-            }
-            synchronized (klienci){
-                klienci.remove(this);
-                uzytkownicy.setText("" + klienci.size());
+            } finally {
+                try {
+                    ois.close();
+                    oos.close();
+                    socket.close();
+                } catch (IOException e) {
+                }
             }
         }
     }
