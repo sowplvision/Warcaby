@@ -1,12 +1,10 @@
-import Komponenty.Pionek;
+import Komponenty.Pakiet;
 import Komponenty.Plansza;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -22,8 +20,8 @@ public class Klient extends JFrame{
     private JButton polacz, rozlacz;
     private JLabel statusPolaczenia;
 
-    private Warcaby warcaby;
-    private Plansza plansza;
+    private Plansza warcaby;
+    private Pakiet plansza;
 
     private boolean polaczony = false;
 
@@ -61,7 +59,7 @@ public class Klient extends JFrame{
         JPanel ustawieniaPolaczenia = new JPanel();
         JPanel panelStatusuPolaczenia = new JPanel();
         JPanel panelWynikow = new JPanel();
-        warcaby = new Warcaby();
+        warcaby = new Plansza();
 
         //dodawanie komponentow do paneli
         ustawieniaPolaczenia.add(new JLabel("Adres serwera:"));
@@ -168,7 +166,7 @@ public class Klient extends JFrame{
 
                     oos.flush();
 
-                    plansza = (Plansza) ois.readObject();
+                    plansza = (Pakiet) ois.readObject();
                     warcaby.setPionki(plansza.getPionki());
                     repaint();
 
@@ -204,124 +202,6 @@ public class Klient extends JFrame{
                 polacz.setEnabled(true);
                 repaint();
             } catch (IOException e) {}
-        }
-    }
-
-    private class Warcaby extends JComponent implements MouseListener{
-        private int[][] pionki;
-
-        private int rozmiarPionka = Pionek.getRozmiarPionka();
-        private int rozmiarPola = (int)(rozmiarPionka*1.25);
-
-        private Dimension rozmiarPlanszy = new Dimension(rozmiarPola*8,rozmiarPola*8);
-
-        private static final int wylaczonePole = 0;
-        private static final int wolnePole = 1;
-        private static final int czarnyPionek = 2;
-        private static final int czarnaDamka = 3;
-        private static final int bialyPionek = 4;
-        private static final int bialaDamka = 5;
-
-        public Warcaby(){
-            setPreferredSize(rozmiarPlanszy);
-
-            pionki = new int[8][8];
-
-            for(int y = 0;y < 8; y++){
-                for(int x = 0;x < 8; x++){
-                    pionki[x][y] = 0;
-                }
-            }
-        }
-
-        @Override
-        public void paintComponent(Graphics g) {
-            narysujSzachownice(g);
-
-            narysujPionki(g);
-        }
-
-        public void narysujSzachownice(Graphics g){
-            //narysuj szachownice
-            for(int y = 0; y < 8; y++){
-                g.setColor(((y & 1) != 0) ? Color.DARK_GRAY : Color.WHITE);
-                for (int x = 0; x < 8; x++)
-                {
-                    g.fillRect(x * rozmiarPola, y * rozmiarPola, rozmiarPola, rozmiarPola);
-                    g.setColor((g.getColor() == Color.DARK_GRAY) ? Color.WHITE : Color.DARK_GRAY);
-                }
-            }
-        }
-
-        public void narysujPionki(Graphics g){
-            //rysowanie pionkow
-            for(int y = 0; y < 8; y++){
-                for (int x = 0; x < 8; x ++){
-                    Pionek pionek;
-                    if(pionki[x][y] == czarnyPionek){
-                        pionek = new Pionek(6+rozmiarPola*x,6+rozmiarPola*y, "Czarny_pionek");
-                        pionek.paintComponent(g);
-                    }
-
-                    if(pionki[x][y] == bialyPionek){
-                        pionek = new Pionek(6+rozmiarPola*x,6+rozmiarPola*y, "Biały_pionek");
-                        pionek.paintComponent(g);
-                    }
-
-                    if(pionki[x][y] == czarnaDamka){
-                        pionek = new Pionek(6+rozmiarPola*x,6+rozmiarPola*y, "Czarna_damka");
-                        pionek.paintComponent(g);
-                    }
-
-                    if(pionki[x][y] == bialaDamka){
-                        pionek = new Pionek(6+rozmiarPola*x,6+rozmiarPola*y, "Biała_damka");
-                        pionek.paintComponent(g);
-                    }
-                }
-            }
-        }
-
-        public void setPionki(int[][] pionki) {
-            this.pionki = pionki;
-        }
-
-        public void pokazSzachownice(){
-            //pozawala zobaczyc stan tablicy pionki w konsoli
-            for(int y = 0;y < 8;y++){
-                System.out.println("");
-                for (int x = 0;x < 8; x++){
-                    System.out.print(" " + pionki[x][y]);
-                }
-            }
-        }
-
-        public int[][] getPionki() {
-            return pionki;
-        }
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-
         }
     }
 }
