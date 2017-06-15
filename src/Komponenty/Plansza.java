@@ -11,6 +11,8 @@ import java.awt.event.MouseListener;
 public class Plansza extends JComponent implements MouseListener {
     private int[][] pionki;
 
+    private int x1, x2, y1, y2;
+
     private int rozmiarPionka = Pionek.getRozmiarPionka();
     private int rozmiarPola = (int)(rozmiarPionka*1.25);
 
@@ -72,12 +74,12 @@ public class Plansza extends JComponent implements MouseListener {
                 }
 
                 if(pionki[x][y] == czarnaDamka){
-                    pionek = new Pionek(6+rozmiarPola*x,6+rozmiarPola*y, "Czarna_damka");
+                    pionek = new Pionek(6+rozmiarPola*x,6+rozmiarPola*y, "Czarny_damka");
                     pionek.paintComponent(g);
                 }
 
                 if(pionki[x][y] == bialaDamka){
-                    pionek = new Pionek(6+rozmiarPola*x,6+rozmiarPola*y, "Biała_damka");
+                    pionek = new Pionek(6+rozmiarPola*x,6+rozmiarPola*y, "Biały_damka");
                     pionek.paintComponent(g);
                 }
             }
@@ -132,7 +134,26 @@ public class Plansza extends JComponent implements MouseListener {
     @Override
     public void mousePressed(MouseEvent e) {
         //przykladowe pobieranie pola
-        System.out.println("X: "+ (e.getX()/rozmiarPola) + " Y:" + (e.getY()/rozmiarPola));
+
+        int x = e.getX()/rozmiarPola;
+        int y = e.getY()/rozmiarPola;
+
+        if(pionki[x][y] == wylaczonePole) {
+            System.out.println("POLE WYŁĄCZONE");
+        }
+
+        if(pionki[x][y] > wolnePole){
+            x1 = x;
+            y1 = y;
+            System.out.println("Wybrano pionek X: "+ (x1) + " Y:" + (y1));
+        }
+
+        if(pionki[x][y] == wolnePole) {
+            x2 = x;
+            y2 = y;
+            System.out.println("Wybrano wolne pole X: " + (x2) + " Y:" + (y2));
+            przesunPionek();
+        }
     }
 
     @Override
@@ -148,5 +169,52 @@ public class Plansza extends JComponent implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    public void przesunPionek(){
+        //porusz czarnymi pionkami
+        if(pionki[x1][y1] == czarnyPionek) {
+            if (y2 - y1 == 1 && y2 - y1 == Math.abs(x2 - x1)) {
+                pionki[x2][y2] = pionki[x1][y1];
+                pionki[x2][y2] = stworzDamke(czarnyPionek);
+                pionki[x1][y1] = wolnePole;
+            }
+        }
+
+        //porusz bialymi pionkami
+        if (pionki[x1][y1] == bialyPionek) {
+            if (y1 - y2 == 1 && y1 - y2 == Math.abs(x1 - x2)) {
+                pionki[x2][y2] = pionki[x1][y1];
+                pionki[x2][y2] = stworzDamke(bialyPionek);
+                pionki[x1][y1] = wolnePole;
+            }
+        }
+
+        //porusz czarna lub biala damke
+        if(pionki[x1][y1] == czarnaDamka || pionki[x1][y1] == bialaDamka) {
+            if (y2 - y1 == Math.abs(x2 - x1) || y1 - y2 == Math.abs(x1 - x2)) {
+                pionki[x2][y2] = pionki[x1][y1];
+                pionki[x1][y1] = wolnePole;
+            }
+        }
+
+        repaint();
+    }
+
+    public void zbijPionek(){
+
+    }
+
+    public int stworzDamke(int typPionka){
+        int nowytypPionka = typPionka;
+
+        if(typPionka == bialyPionek && y2 == 0){
+            nowytypPionka = bialaDamka;
+        }
+
+        if(typPionka == czarnyPionek && y2 == 7){
+            nowytypPionka = czarnaDamka;
+        }
+        return nowytypPionka;
     }
 }

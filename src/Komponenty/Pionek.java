@@ -37,11 +37,11 @@ public class Pionek extends JComponent {
             g.fillOval(x + 8, y + 8, rozmiarPionka - 16, rozmiarPionka - 16);
         }
         if(typ.contains("damka")){
-            if (typ.equals("Czarna_damka")) {
+            if (typ.equals("Czarny_damka")) {
                 kolorBazowy = Color.black;
                 kolorDodatkowy = Color.orange;
             }
-            if(typ.equals("Biała_damka")) {
+            if(typ.equals("Biały_damka")) {
                 kolorBazowy = Color.white;
                 kolorDodatkowy = Color.orange;
             }

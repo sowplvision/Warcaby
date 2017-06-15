@@ -25,6 +25,7 @@ public class Klient extends JFrame{
     private Pakiet pakiet = new Pakiet();
 
     private boolean polaczony = false;
+    private String kolorGracza ;
 
     public Klient(){
         //tworzenie GUI
@@ -137,7 +138,6 @@ public class Klient extends JFrame{
         private String adresSerwera;
         private ObjectInputStream ois;
         private ObjectOutputStream oos;
-        private String kolorGracza;
 
         @Override
         public void run() {
@@ -167,6 +167,7 @@ public class Klient extends JFrame{
 
                 statusPolaczenia.setForeground(Color.GREEN);
                 statusPolaczenia.setText("ONLINE");
+                repaint();
 
                 oos = new ObjectOutputStream(socket.getOutputStream());
                 ois = new ObjectInputStream(socket.getInputStream());
@@ -184,6 +185,11 @@ public class Klient extends JFrame{
 
                         //polecenie logout
                         if (pakiet.getKomenda().equals(LOGOUT)) {
+                            polaczony = false;
+                        }
+
+                        //pelen serwer
+                        if (pakiet.getKomenda().equals(FULL_SERVER)) {
                             polaczony = false;
                         }
 

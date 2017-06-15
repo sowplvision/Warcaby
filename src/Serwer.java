@@ -209,11 +209,6 @@ public class Serwer extends JFrame{
         public Client(Socket socket){
             this.socket = socket;
             polaczony = true;
-
-            synchronized (klienci){
-                klienci.add(this);
-                uzytkownicy.setText("" + klienci.size());
-            }
         }
 
         @Override
@@ -234,6 +229,11 @@ public class Serwer extends JFrame{
 
                         //otrzymano polecenie logi
                         if (pakiet.getKomenda().equals(LOGIN)) {
+                            synchronized (klienci){
+                                klienci.add(this);
+                                uzytkownicy.setText("" + klienci.size());
+                            }
+
                             //jesli jest 2 graczy
                             if(klienci.size() == 2){
                                 //gra rozpoczyna się
@@ -247,7 +247,7 @@ public class Serwer extends JFrame{
 
                             //kazdy nadmiarowy gracz
                             if(klienci.size() > 2){
-                                pakiet.setKomenda(LOGOUT);
+                                pakiet.setKomenda(FULL_SERVER);
                                 oos.writeObject(pakiet);
                                 oos.flush();
                             }               
@@ -262,7 +262,6 @@ public class Serwer extends JFrame{
                                 klienci.remove(this);
                                 uzytkownicy.setText("" + klienci.size());
                             }
-                            //wyslij pakiet
                             oos.writeObject(pakiet);
                         }
 
