@@ -1,5 +1,6 @@
 import Komponenty.Pakiet;
 import Komponenty.Plansza;
+import Komponenty.Protokol;
 
 import javax.swing.*;
 import java.awt.*;
@@ -94,7 +95,7 @@ public class Klient extends JFrame{
         new Thread(() -> new Klient()).run();
     }
 
-    private class ObslugaZdarzen implements ActionListener{
+    private class ObslugaZdarzen implements ActionListener, Protokol{
         private ObslugaKlienta obsluga;
 
         @Override
@@ -125,7 +126,7 @@ public class Klient extends JFrame{
         }
     }
 
-    private class ObslugaKlienta extends Thread{
+    private class ObslugaKlienta extends Thread implements Protokol{
         private Socket socket;
         private int nrPortu;
         private String adresSerwera;
@@ -160,9 +161,10 @@ public class Klient extends JFrame{
                 statusPolaczenia.setForeground(Color.GREEN);
                 statusPolaczenia.setText("ONLINE");
 
+                ois = new ObjectInputStream(socket.getInputStream());
+                oos = new ObjectOutputStream(socket.getOutputStream());
+
                 while (polaczony){
-                    ois = new ObjectInputStream(socket.getInputStream());
-                    oos = new ObjectOutputStream(socket.getOutputStream());
 
                     oos.flush();
 
@@ -172,9 +174,9 @@ public class Klient extends JFrame{
 
                     oos.writeObject(plansza);
 
-                    ois.close();
-                    oos.close();
                 }
+                ois.close();
+                oos.close();
                 socket.close();
             } catch (UnknownHostException e) {
             } catch (IOException e) {

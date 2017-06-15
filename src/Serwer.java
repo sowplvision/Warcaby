@@ -1,5 +1,6 @@
 import Komponenty.Pakiet;
 import Komponenty.Plansza;
+import Komponenty.Protokol;
 
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
@@ -129,7 +130,7 @@ public class Serwer extends JFrame{
         }
     }
 
-    private class Server extends Thread{
+    private class Server extends Thread implements Protokol{
         private ServerSocket server;
         private int nrPortu;
 
@@ -194,7 +195,7 @@ public class Serwer extends JFrame{
         }
     }
 
-    private class Client extends Thread{
+    private class Client extends Thread implements Protokol{
         private Socket socket;
         private ObjectInputStream ois;
         private ObjectOutputStream oos;
@@ -222,7 +223,6 @@ public class Serwer extends JFrame{
                         oos.flush();
 
                         oos.writeObject(plansza);
-                        oos.flush();
 
                         plansza = (Pakiet) ois.readObject();
 
