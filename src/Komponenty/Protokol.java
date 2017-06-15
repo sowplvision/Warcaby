@@ -10,5 +10,5 @@ public interface Protokol {
     public static final String GAME_START = "GAMESTART";
     public static final String CHECKER_MOVE = "MOVE";
     public static final String WAITING_FOR_MOVE = "WAITING";
-    public static final String NONE = "NONE";
+    public static final String FULL_SERVER = "FULLSERVER";
 }

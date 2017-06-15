@@ -112,13 +112,14 @@ public class Klient extends JFrame{
                 port.setEnabled(false);
                 polacz.setEnabled(false);
                 rozlacz.setEnabled(true);
+
+                statusPolaczenia.setForeground(Color.ORANGE);
+                statusPolaczenia.setText("CONNECTING");
                 repaint();
             }
             if(event.getActionCommand().equals("Rozłącz")){
                 //przerwij polaczenie
                 obsluga.kill();
-
-                pakiet.setKomenda(LOGOUT);
 
                 //zmien stan GUI
                 adres.setEnabled(true);
@@ -162,6 +163,7 @@ public class Klient extends JFrame{
                 socket = new Socket(adresSerwera, nrPortu);
 
                 polaczony = true;
+                rozlacz.setEnabled(true);
 
                 statusPolaczenia.setForeground(Color.GREEN);
                 statusPolaczenia.setText("ONLINE");
@@ -215,12 +217,8 @@ public class Klient extends JFrame{
             } catch (IOException e) {
             } finally {
                 try {
-                    ois.close();
-                    oos.close();
-                    socket.close();
-
                     kill();
-                } catch (IOException e) {
+                } catch (Exception e) {
                 }
             }
         }
@@ -228,6 +226,16 @@ public class Klient extends JFrame{
         public void kill(){
             //obsluga przycisku rozlacz
             try{
+                if(oos != null){
+                    pakiet = new Pakiet(LOGOUT);
+                    oos.writeObject(pakiet);
+                    oos.close();
+                }
+
+                if(ois != null) {
+                    ois.close();
+                }
+
                 //rozlacz jesli socket nie byl pusty
                 if(socket != null) {
                     socket.close();

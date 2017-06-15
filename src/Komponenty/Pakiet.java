@@ -16,6 +16,10 @@ public class Pakiet implements Serializable {
 
     }
 
+    public Pakiet(String komenda){
+        this.komenda = komenda;
+    }
+
     public int[][] getPionki() {
         return pionki;
     }
