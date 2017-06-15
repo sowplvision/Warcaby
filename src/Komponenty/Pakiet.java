@@ -16,19 +16,6 @@ public class Pakiet implements Serializable {
 
     }
 
-    public Pakiet(int[][] pionki){
-        this.pionki = pionki;
-    }
-
-    public Pakiet(String komenda){
-        this.komenda = komenda;
-    }
-
-    public Pakiet(int[][] pionki, String komenda){
-        this.pionki = pionki;
-        this.komenda = komenda;
-    }
-
     public int[][] getPionki() {
         return pionki;
     }

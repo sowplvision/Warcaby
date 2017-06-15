@@ -173,35 +173,43 @@ public class Klient extends JFrame{
                     try {
                         oos.flush();
 
+                        //wyslij pakiet
                         oos.writeObject(pakiet);
 
+                        //odbierz pakiet
                         pakiet = (Pakiet) ois.readObject();
 
+                        //chwilowe nasluchiwanie komend
                         System.out.println(pakiet.getKomenda());
 
+                        //polecenie login
                         if(pakiet.getKomenda().equals(LOGIN)){
-
+                            oos.writeObject(pakiet);
                         }
 
+                        //polecenie logout
                         if (pakiet.getKomenda().equals(LOGOUT)) {
                             polaczony = false;
                         }
 
+                        //polecenie koniec gry
                         if (pakiet.getKomenda().equals(END_OF_GAME)) {
 
                         }
 
+                        //polecenie przesuniecia pionka
                         if (pakiet.getKomenda().equals(CHECKER_MOVE)) {
 
                         }
 
+                        //polecenie oczekiwania na ruch
                         if (pakiet.getKomenda().equals(WAITING_FOR_MOVE)) {
 
                         }
 
+                        //polecenie rozpoeczecia nowej gry
                         if (pakiet.getKomenda().equals(GAME_START)) {
                             warcaby.setPionki(pakiet.getPionki());
-                            kolorGracza = pakiet.getKolorGracza();
                             repaint();
                         }
 
@@ -213,7 +221,6 @@ public class Klient extends JFrame{
             } catch (UnknownHostException e) {
             } catch (IOException e) {
             } finally {
-                /**
                 try {
                     ois.close();
                     oos.close();
@@ -222,7 +229,6 @@ public class Klient extends JFrame{
                     kill();
                 } catch (IOException e) {
                 }
-                 */
             }
         }
 

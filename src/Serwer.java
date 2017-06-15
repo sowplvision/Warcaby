@@ -24,7 +24,7 @@ public class Serwer extends JFrame{
     private JButton uruchom, zatrzymaj;
 
     //lista polaczonych klientow
-    private Vector<Client> klienci = new Vector<Client>();
+    private Vector<Client> klienci;
 
     //status serwera
     private boolean uruchomiony = false;
@@ -110,6 +110,10 @@ public class Serwer extends JFrame{
                 server.start();
                 uruchomiony = true;
 
+                //wyczysc liste
+                klienci = new Vector<Client>();
+                uzytkownicy.setText("" + klienci.size());
+
                 //zmien stan GUI
                 port.setEnabled(false);
                 uruchom.setEnabled(false);
@@ -165,6 +169,15 @@ public class Serwer extends JFrame{
 
                     //nowy watek polaczenia dla nowego klienta
                     new Client(socket).start();
+
+                    //gra rozpoczyna się
+                    if (pakiet.getKomenda().equals(GAME_START)) {
+                        for(Client klient: klienci) {
+                            pakiet.setPionki(warcaby.nowaGra());
+                            klient.oos.writeObject(pakiet);
+                        }
+                        pakiet.setKomenda(NONE);
+                    }
                 }
             } catch (IOException e) {
             } finally {
@@ -223,49 +236,55 @@ public class Serwer extends JFrame{
                 while (uruchomiony && polaczony) {
                     try {
 
+                        //odbierz pakiet od klienta
                         pakiet = (Pakiet) ois.readObject();
 
+                        //chwilowe nasluchowanie komendy
                         System.out.println(pakiet.getKomenda());
 
                         oos.flush();
 
+                        //otrzymano polecenie logi
                         if (pakiet.getKomenda().equals(LOGIN)) {
+                            //jesli jest 2 graczy
                             if(klienci.size() == 2){
                                 pakiet.setKomenda(GAME_START);
                                 pakiet.setPionki(warcaby.getPionki());
                             }
 
+                            //kazdy nadmiarowy gracz
                             if(klienci.size() > 2){
                                 pakiet.setKomenda(LOGOUT);
                             }
+
+                            //wyslij pakiet
                             oos.writeObject(pakiet);
                         }
 
+                        //polecenie logout
                         if (pakiet.getKomenda().equals(LOGOUT)) {
+                            //usun klienta z listy polaczonych
                             synchronized (klienci){
                                 polaczony = false;
                                 log.append("Rozłączono z użytkownikiem.\n");
                                 klienci.remove(this);
                                 uzytkownicy.setText("" + klienci.size());
                             }
+                            //wyslij pakiet
                             oos.writeObject(pakiet);
                         }
 
-                        if (pakiet.getKomenda().equals(GAME_START)) {
-                            for(Client klient: klienci) {
-                                pakiet.setPionki(warcaby.nowaGra());
-                                klient.oos.writeObject(pakiet);
-                            }
-                        }
-
+                        //polecenie zakonczenia gry
                         if (pakiet.getKomenda().equals(END_OF_GAME)) {
 
                         }
 
+                        //polecenie przesuniecia pionka
                         if (pakiet.getKomenda().equals(CHECKER_MOVE)) {
 
                         }
 
+                        //polecenie oczekiwanie na gracza
                         if (pakiet.getKomenda().equals(WAITING_FOR_MOVE)) {
 
                         }
