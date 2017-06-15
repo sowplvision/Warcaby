@@ -96,6 +96,7 @@ public class Plansza extends JComponent implements MouseListener {
                 System.out.print(" " + pionki[x][y]);
             }
         }
+        System.out.println();
     }
 
     public int[][] getPionki() {
