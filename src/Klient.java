@@ -245,7 +245,6 @@ public class Klient extends JFrame{
                                 warcaby.removeMouseListener();
 
                                 //przygotuj pakiet
-                                //TODO powinno wysylac nowa tablice - tablica jest dobra przypisywana ale z jakiegos powodu nie wysyla
                                 pakiet.setKomenda(WAITING_FOR_MOVE);
                                 pakiet.setPionki(warcaby.getPionki());
 
@@ -265,103 +264,6 @@ public class Klient extends JFrame{
                                 warcaby.setPrzesunietoPionek(false);
                             }
                         }
-
-                        /**
-                        //polecenie poruszania sie dla czarnych pionkow
-                        if (pakiet.getKomenda().equals(MOVE_BLACK)) {
-
-                            //upewnienie sie o kolor gracza
-                            if(warcaby.getKolorGracza().equals("Czarny")) {
-
-                                System.out.println("YOUR TURN");
-
-                                //nasluchiwanie poruszania
-                                warcaby.addMouseListener();
-
-                                //oczekiwanie na ruch
-                                while (!warcaby.getPrzesunietoPionek()) {
-                                    try {
-                                        sleep(100);
-                                    } catch (InterruptedException e) {
-                                    }
-                                }
-
-                                //po wykonaniu ruchu nie nasluchuj wiecej planszy
-                                warcaby.removeMouseListener();
-
-                                //przygotuj pakiet
-                                //TODO powinno wysylac nowa tablice - tablica jest dobra przypisywana ale z jakiegos powodu nie wysyla
-                                pakiet.setKomenda(MOVEMENT);
-                                pakiet.setPionki(warcaby.getPionki());
-                                pakiet.setKolejGracza("Biały");
-
-                                //wyslij zmieniona plansza
-                                oos.reset();
-                                oos.writeObject(pakiet);
-                                oos.flush();
-
-                                //pozwol kolejnemu graczowi na ruch
-                                warcaby.setPrzesunietoPionek(false);
-                            }
-                        }
-
-                        //polecenie poruszania bialymi pionkami
-                        if (pakiet.getKomenda().equals(MOVE_WHITE)) {
-                            //upewni sie koloru gracza
-                            if(warcaby.getKolorGracza().equals("Biały")) {
-
-                                System.out.println("YOUR TURN");
-
-                                //nasluchuj plansze
-                                warcaby.addMouseListener();
-
-                                //czekaj na ruch
-                                while (!warcaby.getPrzesunietoPionek()) {
-                                    try {
-                                        sleep(100);
-                                    } catch (InterruptedException e) {
-                                    }
-                                }
-
-                                //przestan nasluchiwac po wykonaniu ruchu
-                                warcaby.removeMouseListener();
-
-
-                                //przygotuj pakiet
-                                //TODO powinno wysylac nowa tablice - tablica jest dobra przypisywana ale z jakiegos powodu nie wysyla
-                                pakiet.setKomenda(MOVEMENT);
-                                pakiet.setPionki(warcaby.getPionki());
-                                pakiet.setKolejGracza("Czarny");
-
-                                //wyslij pakiet z nowa plansza
-                                oos.reset();
-                                oos.writeObject(pakiet);
-                                oos.flush();
-
-                                //pozwol na ruch nowemu graczowi
-                                warcaby.setPrzesunietoPionek(false);
-                            }
-                        }
-                         */
-
-                        /**
-                        if (pakiet.getKomenda().equals(MOVEMENT)) {
-                            //aktualizuj rozmieszczenie pionkow
-                            warcaby.setPionki(pakiet.getPionki());
-                            repaint();
-
-                            //powroc do rozgrywki
-                            pakiet.setKomenda(WAITING_FOR_MOVE);
-                            oos.writeObject(pakiet);
-                        }
-                         */
-
-                        /**
-                        if(pakiet.getKomenda().equals(WAITING_FOR_MOVE)){
-                            oos.writeObject(pakiet);
-                        }
-                         */
-
                     } catch (IOException e){
                     } catch (ClassNotFoundException e){
                     }

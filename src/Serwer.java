@@ -332,52 +332,6 @@ public class Serwer extends JFrame{
                                 klient.oos.flush();
                             }
                         }
-
-                        /**
-                        //polecenie oczekiwanie na gracza
-                        if (pakiet.getKomenda().equals(WAITING_FOR_MOVE)) {
-
-                            //chwilowo wyrysuj szachownice w konsoli pokazujac co odebralismy w pakiecie
-                            //TODO nie wiem dlaczego ta tablica sie nie zmienia - nadal jest stara
-                            warcaby.setPionki(pakiet.getPionki());
-                            warcaby.pokazSzachownice();
-
-                            //przydzielaj kolejnosc graczom
-                            if(pakiet.getKolejGracza().equals("Czarny")){
-                                pakiet.setKomenda(MOVE_BLACK);
-                            }
-                            if(pakiet.getKolejGracza().equals("Biały")){
-                                pakiet.setKomenda(MOVE_WHITE);
-                            }
-
-
-                            //wyslij komende do drugiego gracza
-                            for(Client klient: klienci){
-                                if(klient != this) {
-                                    System.out.println("NEXT MOVE: " + pakiet.getKolejGracza());
-                                    klient.oos.writeObject(pakiet);
-                                    klient.oos.flush();
-                                }
-                            }
-                            oos.writeObject(pakiet);
-                            oos.flush();
-                        }
-                         */
-
-                        /**
-                        if (pakiet.getKomenda().equals(MOVE_BLACK)) {
-
-                        }
-
-                        if (pakiet.getKomenda().equals(MOVE_WHITE)) {
-
-                        }
-
-                         if (pakiet.getKomenda().equals(MOVEMENT)) {
-                         oos.writeObject(pakiet);
-                         oos.flush();
-                         }
-                         */
                     } catch (IOException e){
                     } catch (ClassNotFoundException e){
                     }
