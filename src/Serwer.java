@@ -217,6 +217,7 @@ public class Serwer extends JFrame{
                 ois = new ObjectInputStream(socket.getInputStream());
                 oos.flush();
 
+                pakiet = null;
                 while (uruchomiony && polaczony) {
                     try {
 
@@ -319,7 +320,7 @@ public class Serwer extends JFrame{
 
                         }
 
-
+                        /**
                         //polecenie przesuniecia pionka
                         if (pakiet.getKomenda().equals(CHECKER_MOVE)) {
                             System.out.println("MOVEMENT FROM " + pakiet.getKolorGracza());
@@ -332,21 +333,49 @@ public class Serwer extends JFrame{
                                 klient.oos.flush();
                             }
                         }
+                         */
+
+                        if (pakiet.getKomenda().equals(MOVEMENT)) {
+                            /**
+                             if(!pakiet.getKolejGracza().equals("Czarny")){
+                             pakiet.setKolejGracza("Biały");
+                             }
+                             else {
+                             pakiet.setKolejGracza("Czarny");
+                             }
+
+                             if(pakiet.getKolejGracza().equals(pakiet.getKolorGracza())) {
+                             oos.writeObject(pakiet);
+                             oos.flush();
+                             }
+                             */
+
+                            warcaby.setPionki(pakiet.getPionki());
+                            System.out.println(pakiet.getKolejGracza());
+                            pakiet.setPionki(warcaby.getPionki());
+
+                            oos.writeObject(pakiet);
+                        }
 
 
                         //polecenie oczekiwanie na gracza
                         if (pakiet.getKomenda().equals(WAITING_FOR_MOVE)) {
-                            if(!pakiet.getKolejGracza().equals("Czarny")){
-                                pakiet.setKolejGracza("Biały");
+                            if(pakiet.getKolejGracza().equals("Czarny")){
+                                pakiet.setKomenda(MOVE_BLACK);
                             }
-                            else {
-                                pakiet.setKolejGracza("Czarny");
+                            if(pakiet.getKolejGracza().equals("Biały")){
+                                pakiet.setKomenda(MOVE_WHITE);
                             }
+                            oos.writeObject(pakiet);
+                            oos.flush();
+                        }
 
-                            if(pakiet.getKolejGracza().equals(pakiet.getKolorGracza())) {
-                                oos.writeObject(pakiet);
-                                oos.flush();
-                            }
+                        if (pakiet.getKomenda().equals(MOVE_BLACK)) {
+
+                        }
+
+                        if (pakiet.getKomenda().equals(MOVE_WHITE)) {
+
                         }
                     } catch (IOException e){
                     } catch (ClassNotFoundException e){

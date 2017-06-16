@@ -203,13 +203,16 @@ public class Klient extends JFrame{
                             repaint();
                         }
 
+                        /**
                         //polecenie przesuniecia pionka
                         if (pakiet.getKomenda().equals(CHECKER_MOVE)) {
 
                             warcaby.setPionki(pakiet.getPionki());
                             repaint();
                         }
+                         */
 
+                        /**
                         //polecenie oczekiwania na ruch
                         if (pakiet.getKomenda().equals(WAITING_FOR_MOVE)) {
                             System.out.println(pakiet.getKolejGracza());
@@ -240,6 +243,7 @@ public class Klient extends JFrame{
                                 oos.flush();
                             }
                         }
+                         */
 
                         //polecenie rozpoeczecia nowej gry
                         if (pakiet.getKomenda().equals(GAME_START)) {
@@ -259,6 +263,65 @@ public class Klient extends JFrame{
                             oos.flush();
                         }
 
+                        if (pakiet.getKomenda().equals(MOVE_BLACK)) {
+                            if(warcaby.getKolorGracza().equals("Czarny")) {
+                                System.out.println("YOUR TURN");
+
+                                warcaby.addMouseListener();
+
+                                while (!warcaby.getPrzesunietoPionek()) {
+                                    try {
+                                        sleep(1000);
+                                    } catch (InterruptedException e) {
+                                    }
+                                }
+
+                                warcaby.removeMouseListener();
+
+                                pakiet.setKomenda(MOVEMENT);
+                                pakiet.setPionki(warcaby.getPionki());
+                                pakiet.setKolejGracza("Biały");
+
+                                oos.writeObject(pakiet);
+                                oos.flush();
+
+                                warcaby.setPrzesunietoPionek(false);
+                            }
+                        }
+
+                        if (pakiet.getKomenda().equals(MOVE_WHITE)) {
+                            if(warcaby.getKolorGracza().equals("Biały")) {
+                                pakiet.setKolorGracza(warcaby.getKolorGracza());
+                                System.out.println(warcaby.getKolorGracza());
+
+                                System.out.println("YOUR TURN");
+
+                                warcaby.addMouseListener();
+
+                                while (!warcaby.getPrzesunietoPionek()) {
+                                    try {
+                                        sleep(1000);
+                                    } catch (InterruptedException e) {
+                                    }
+                                }
+
+                                warcaby.removeMouseListener();
+
+                                pakiet.setKomenda(MOVEMENT);
+                                pakiet.setPionki(warcaby.getPionki());
+                                pakiet.setKolejGracza("Czarny");
+
+                                oos.writeObject(pakiet);
+                                oos.flush();
+
+                                warcaby.setPrzesunietoPionek(false);
+                            }
+                        }
+
+                        if (pakiet.getKomenda().equals(MOVEMENT)) {
+                            warcaby.setPionki(pakiet.getPionki());
+                            repaint();
+                        }
 
                     } catch (IOException e){
                     } catch (ClassNotFoundException e){
