@@ -8,6 +8,7 @@ public interface Protokol {
     public static final String LOGOUT = "LOGOUT";
     public static final String END_OF_GAME = "ENDGAME";
     public static final String GAME_START = "GAMESTART";
+    public static final String CHECKER_MOVE = "MOVE";
     public static final String MOVE_BLACK = "BLACKMOVES";
     public static final String MOVE_WHITE = "WHITEMOVES";
     public static final String MOVEMENT = "PLAYERMOVED";

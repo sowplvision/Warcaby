@@ -202,6 +202,7 @@ public class Serwer extends JFrame{
     private class Client extends Thread implements Protokol{
         private Socket socket;
         private boolean polaczony = false;
+        private String kolorGracza;
         private ObjectInputStream ois;
         private ObjectOutputStream oos;
 
@@ -251,10 +252,12 @@ public class Serwer extends JFrame{
                                 //przydziel kolory graczom
                                 for (Client klient : klienci) {
                                     if(klient.getId() < klienci.lastElement().getId()){
-                                        pakiet.setKolorGracza("Biały");
+                                        kolorGracza = "Biały";
+                                        pakiet.setKolorGracza(kolorGracza);
                                     }
                                     else {
-                                        pakiet.setKolorGracza("Czarny");
+                                        kolorGracza = "Czarny";
+                                        pakiet.setKolorGracza(kolorGracza);
                                     }
                                     //wyslij gotowy pakiet
                                     klient.oos.writeObject(pakiet);
@@ -319,11 +322,18 @@ public class Serwer extends JFrame{
                         }
 
 
-                        if (pakiet.getKomenda().equals(MOVEMENT)) {
+                        if(pakiet.getKomenda().equals(WAITING_FOR_MOVE)){
 
+                            pakiet.setKomenda(CHECKER_MOVE);
+
+                            for (Client klient : klienci){
+                                if(klient != this)
+                                klient.oos.writeObject(pakiet);
+                                klient.oos.flush();
+                            }
                         }
 
-
+                        /**
                         //polecenie oczekiwanie na gracza
                         if (pakiet.getKomenda().equals(WAITING_FOR_MOVE)) {
 
@@ -340,6 +350,7 @@ public class Serwer extends JFrame{
                                 pakiet.setKomenda(MOVE_WHITE);
                             }
 
+
                             //wyslij komende do drugiego gracza
                             for(Client klient: klienci){
                                 if(klient != this) {
@@ -348,8 +359,12 @@ public class Serwer extends JFrame{
                                     klient.oos.flush();
                                 }
                             }
+                            oos.writeObject(pakiet);
+                            oos.flush();
                         }
+                         */
 
+                        /**
                         if (pakiet.getKomenda().equals(MOVE_BLACK)) {
 
                         }
@@ -357,6 +372,12 @@ public class Serwer extends JFrame{
                         if (pakiet.getKomenda().equals(MOVE_WHITE)) {
 
                         }
+
+                         if (pakiet.getKomenda().equals(MOVEMENT)) {
+                         oos.writeObject(pakiet);
+                         oos.flush();
+                         }
+                         */
                     } catch (IOException e){
                     } catch (ClassNotFoundException e){
                     }

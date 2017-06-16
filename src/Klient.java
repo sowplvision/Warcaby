@@ -221,6 +221,52 @@ public class Klient extends JFrame{
                             oos.flush();
                         }
 
+                        if(pakiet.getKomenda().equals(CHECKER_MOVE)){
+                            //upewnienie sie o kolor gracza
+                            if(warcaby.getKolorGracza().equals(pakiet.getKolejGracza())) {
+
+                                warcaby.setPionki(pakiet.getPionki());
+                                repaint();
+
+                                System.out.println("YOUR TURN");
+
+                                //nasluchiwanie poruszania
+                                warcaby.addMouseListener();
+
+                                //oczekiwanie na ruch
+                                while (!warcaby.getPrzesunietoPionek()) {
+                                    try {
+                                        sleep(100);
+                                    } catch (InterruptedException e) {
+                                    }
+                                }
+
+                                //po wykonaniu ruchu nie nasluchuj wiecej planszy
+                                warcaby.removeMouseListener();
+
+                                //przygotuj pakiet
+                                //TODO powinno wysylac nowa tablice - tablica jest dobra przypisywana ale z jakiegos powodu nie wysyla
+                                pakiet.setKomenda(WAITING_FOR_MOVE);
+                                pakiet.setPionki(warcaby.getPionki());
+
+                                if(pakiet.getKolejGracza().equals("Czarny")) {
+                                    pakiet.setKolejGracza("Biały");
+                                }
+                                else {
+                                    pakiet.setKolejGracza("Czarny");
+                                }
+
+                                //wyslij zmieniona plansza
+                                oos.reset();
+                                oos.writeObject(pakiet);
+                                oos.flush();
+
+                                //pozwol kolejnemu graczowi na ruch
+                                warcaby.setPrzesunietoPionek(false);
+                            }
+                        }
+
+                        /**
                         //polecenie poruszania sie dla czarnych pionkow
                         if (pakiet.getKomenda().equals(MOVE_BLACK)) {
 
@@ -245,11 +291,12 @@ public class Klient extends JFrame{
 
                                 //przygotuj pakiet
                                 //TODO powinno wysylac nowa tablice - tablica jest dobra przypisywana ale z jakiegos powodu nie wysyla
-                                pakiet.setKomenda(WAITING_FOR_MOVE);
+                                pakiet.setKomenda(MOVEMENT);
                                 pakiet.setPionki(warcaby.getPionki());
                                 pakiet.setKolejGracza("Biały");
 
                                 //wyslij zmieniona plansza
+                                oos.reset();
                                 oos.writeObject(pakiet);
                                 oos.flush();
 
@@ -282,11 +329,12 @@ public class Klient extends JFrame{
 
                                 //przygotuj pakiet
                                 //TODO powinno wysylac nowa tablice - tablica jest dobra przypisywana ale z jakiegos powodu nie wysyla
-                                pakiet.setKomenda(WAITING_FOR_MOVE);
+                                pakiet.setKomenda(MOVEMENT);
                                 pakiet.setPionki(warcaby.getPionki());
                                 pakiet.setKolejGracza("Czarny");
 
                                 //wyslij pakiet z nowa plansza
+                                oos.reset();
                                 oos.writeObject(pakiet);
                                 oos.flush();
 
@@ -294,7 +342,9 @@ public class Klient extends JFrame{
                                 warcaby.setPrzesunietoPionek(false);
                             }
                         }
+                         */
 
+                        /**
                         if (pakiet.getKomenda().equals(MOVEMENT)) {
                             //aktualizuj rozmieszczenie pionkow
                             warcaby.setPionki(pakiet.getPionki());
@@ -304,6 +354,13 @@ public class Klient extends JFrame{
                             pakiet.setKomenda(WAITING_FOR_MOVE);
                             oos.writeObject(pakiet);
                         }
+                         */
+
+                        /**
+                        if(pakiet.getKomenda().equals(WAITING_FOR_MOVE)){
+                            oos.writeObject(pakiet);
+                        }
+                         */
 
                     } catch (IOException e){
                     } catch (ClassNotFoundException e){
