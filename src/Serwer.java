@@ -239,9 +239,12 @@ public class Serwer extends JFrame{
                             if(klienci.size() == 2){
                                 //gra rozpoczyna się
                                 pakiet.setKomenda(GAME_START);
+
                                 pakiet.setWynikGracza1(0);
                                 pakiet.setWynikGracza2(0);
+
                                 pakiet.setGraTrwa(true);
+
                                 //wygeneruj nowa plansze z pionkami
                                 pakiet.setPionki(warcaby.getPionki());
 
@@ -257,6 +260,7 @@ public class Serwer extends JFrame{
                                     klient.oos.writeObject(pakiet);
                                     klient.oos.flush();
                                 }
+                                log.append("Nowa gra rozpoczyna się.\n");
                             }
 
                             //kazdy nadmiarowy gracz
@@ -276,16 +280,25 @@ public class Serwer extends JFrame{
 
                                 klienci.remove(this);
 
+                                log.append("Rozłączono z użytkownikiem.\n");
+
+                                uzytkownicy.setText("" + klienci.size());
+                                polaczony = false;
+
                                 //klient opuscil gre w trakcie
-                                if(klienci.size() < 2) {
+                                if(klienci.size() < 2 && klienci.size() > 0) {
                                     pakiet.setKomenda(END_OF_GAME);
                                     //ustal id gracza i przypisz mu przegrana
                                     if (temp > klienci.firstElement().getId()) {
                                         pakiet.setWynikGracza1(1);
                                         pakiet.setWynikGracza2(0);
+
+                                        log.append("Zwycięża gracz 1.\n");
                                     } else {
                                         pakiet.setWynikGracza1(0);
                                         pakiet.setWynikGracza2(1);
+
+                                        log.append("Zwycięża gracz 2.\n");
                                     }
 
                                     //wygeneruj pusta plansze
@@ -293,10 +306,6 @@ public class Serwer extends JFrame{
                                     //wyslij pozostalemu klientowi wyniki i nowa plansze
                                     klienci.firstElement().oos.writeObject(pakiet);
                                 }
-
-                                uzytkownicy.setText("" + klienci.size());
-                                polaczony = false;
-                                log.append("Rozłączono z użytkownikiem.\n");
                             }
                             oos.writeObject(pakiet);
                         }

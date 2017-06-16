@@ -261,6 +261,8 @@ public class Klient extends JFrame{
                     socket.close();
                 }
 
+                warcaby.setPionki(warcaby.wygenerujPustaPlansze());
+
                 //zmien status polaczenia
                 polaczony = false;
                 statusPolaczenia.setForeground(Color.RED);
