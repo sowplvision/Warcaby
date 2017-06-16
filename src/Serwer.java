@@ -327,6 +327,8 @@ public class Serwer extends JFrame{
                         //polecenie oczekiwanie na gracza
                         if (pakiet.getKomenda().equals(WAITING_FOR_MOVE)) {
 
+                            //chwilowo wyrysuj szachownice w konsoli pokazujac co odebralismy w pakiecie
+                            //TODO nie wiem dlaczego ta tablica sie nie zmienia - nadal jest stara
                             warcaby.setPionki(pakiet.getPionki());
                             warcaby.pokazSzachownice();
 

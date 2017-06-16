@@ -244,6 +244,7 @@ public class Klient extends JFrame{
                                 warcaby.removeMouseListener();
 
                                 //przygotuj pakiet
+                                //TODO powinno wysylac nowa tablice - tablica jest dobra przypisywana ale z jakiegos powodu nie wysyla
                                 pakiet.setKomenda(WAITING_FOR_MOVE);
                                 pakiet.setPionki(warcaby.getPionki());
                                 pakiet.setKolejGracza("Biały");
@@ -280,6 +281,7 @@ public class Klient extends JFrame{
 
 
                                 //przygotuj pakiet
+                                //TODO powinno wysylac nowa tablice - tablica jest dobra przypisywana ale z jakiegos powodu nie wysyla
                                 pakiet.setKomenda(WAITING_FOR_MOVE);
                                 pakiet.setPionki(warcaby.getPionki());
                                 pakiet.setKolejGracza("Czarny");
