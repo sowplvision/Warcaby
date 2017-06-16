@@ -203,48 +203,6 @@ public class Klient extends JFrame{
                             repaint();
                         }
 
-                        /**
-                        //polecenie przesuniecia pionka
-                        if (pakiet.getKomenda().equals(CHECKER_MOVE)) {
-
-                            warcaby.setPionki(pakiet.getPionki());
-                            repaint();
-                        }
-                         */
-
-                        /**
-                        //polecenie oczekiwania na ruch
-                        if (pakiet.getKomenda().equals(WAITING_FOR_MOVE)) {
-                            System.out.println(pakiet.getKolejGracza());
-
-                            if(pakiet.getKolejGracza().equals(warcaby.getKolorGracza())){
-                                System.out.println("YOUR TURN");
-
-                                warcaby.addMouseListener();
-
-                                while (!warcaby.getPrzesunietoPionek()){
-                                    try {
-                                        sleep(1000);
-                                    } catch (InterruptedException e) {
-                                    }
-                                }
-
-                                warcaby.removeMouseListener();
-
-                                pakiet.setKomenda(CHECKER_MOVE);
-                                pakiet.setPionki(warcaby.getPionki());
-
-                                warcaby.setPionki(pakiet.getPionki());
-                                warcaby.pokazSzachownice();
-
-                                warcaby.setPrzesunietoPionek(false);
-
-                                oos.writeObject(pakiet);
-                                oos.flush();
-                            }
-                        }
-                         */
-
                         //polecenie rozpoeczecia nowej gry
                         if (pakiet.getKomenda().equals(GAME_START)) {
                             //pobierz plansze
@@ -263,12 +221,18 @@ public class Klient extends JFrame{
                             oos.flush();
                         }
 
+                        //polecenie poruszania sie dla czarnych pionkow
                         if (pakiet.getKomenda().equals(MOVE_BLACK)) {
+
+                            //upewnienie sie o kolor gracza
                             if(warcaby.getKolorGracza().equals("Czarny")) {
+
                                 System.out.println("YOUR TURN");
 
+                                //nasluchiwanie poruszania
                                 warcaby.addMouseListener();
 
+                                //oczekiwanie na ruch
                                 while (!warcaby.getPrzesunietoPionek()) {
                                     try {
                                         sleep(100);
@@ -276,27 +240,34 @@ public class Klient extends JFrame{
                                     }
                                 }
 
+                                //po wykonaniu ruchu nie nasluchuj wiecej planszy
                                 warcaby.removeMouseListener();
 
+                                //przygotuj pakiet
                                 pakiet.setKomenda(WAITING_FOR_MOVE);
                                 pakiet.setPionki(warcaby.getPionki());
                                 pakiet.setKolejGracza("Biały");
 
+                                //wyslij zmieniona plansza
                                 oos.writeObject(pakiet);
                                 oos.flush();
 
+                                //pozwol kolejnemu graczowi na ruch
                                 warcaby.setPrzesunietoPionek(false);
                             }
                         }
 
+                        //polecenie poruszania bialymi pionkami
                         if (pakiet.getKomenda().equals(MOVE_WHITE)) {
+                            //upewni sie koloru gracza
                             if(warcaby.getKolorGracza().equals("Biały")) {
-                                pakiet.setKolorGracza(warcaby.getKolorGracza());
 
                                 System.out.println("YOUR TURN");
 
+                                //nasluchuj plansze
                                 warcaby.addMouseListener();
 
+                                //czekaj na ruch
                                 while (!warcaby.getPrzesunietoPionek()) {
                                     try {
                                         sleep(100);
@@ -304,23 +275,30 @@ public class Klient extends JFrame{
                                     }
                                 }
 
+                                //przestan nasluchiwac po wykonaniu ruchu
                                 warcaby.removeMouseListener();
 
+
+                                //przygotuj pakiet
                                 pakiet.setKomenda(WAITING_FOR_MOVE);
                                 pakiet.setPionki(warcaby.getPionki());
                                 pakiet.setKolejGracza("Czarny");
 
+                                //wyslij pakiet z nowa plansza
                                 oos.writeObject(pakiet);
                                 oos.flush();
 
+                                //pozwol na ruch nowemu graczowi
                                 warcaby.setPrzesunietoPionek(false);
                             }
                         }
 
                         if (pakiet.getKomenda().equals(MOVEMENT)) {
+                            //aktualizuj rozmieszczenie pionkow
                             warcaby.setPionki(pakiet.getPionki());
                             repaint();
 
+                            //powroc do rozgrywki
                             pakiet.setKomenda(WAITING_FOR_MOVE);
                             oos.writeObject(pakiet);
                         }

@@ -318,20 +318,6 @@ public class Serwer extends JFrame{
 
                         }
 
-                        /**
-                        //polecenie przesuniecia pionka
-                        if (pakiet.getKomenda().equals(CHECKER_MOVE)) {
-                            System.out.println("MOVEMENT FROM " + pakiet.getKolorGracza());
-
-                            warcaby.setPionki(pakiet.getPionki());
-                            warcaby.pokazSzachownice();
-
-                            for (Client klient : klienci) {
-                                klient.oos.writeObject(pakiet);
-                                klient.oos.flush();
-                            }
-                        }
-                         */
 
                         if (pakiet.getKomenda().equals(MOVEMENT)) {
 
@@ -344,13 +330,14 @@ public class Serwer extends JFrame{
                             warcaby.setPionki(pakiet.getPionki());
                             warcaby.pokazSzachownice();
 
-                            //
+                            //przydzielaj kolejnosc graczom
                             if(pakiet.getKolejGracza().equals("Czarny")){
                                 pakiet.setKomenda(MOVE_BLACK);
                             }
                             if(pakiet.getKolejGracza().equals("Biały")){
                                 pakiet.setKomenda(MOVE_WHITE);
                             }
+
                             //wyslij komende do drugiego gracza
                             for(Client klient: klienci){
                                 if(klient != this) {
