@@ -224,10 +224,11 @@ public class Serwer extends JFrame{
                         //odbierz pakiet od klienta
                         pakiet = (Pakiet) ois.readObject();
 
-                        //chwilowe nasluchowanie komendy
+                        //chwilowe nasluchowanie komendy otrzymanej od klienta
                         System.out.println(pakiet.getKomenda());
 
-                        //otrzymano polecenie logi
+
+                        //otrzymano polecenie login
                         if (pakiet.getKomenda().equals(LOGIN)) {
                             synchronized (klienci){
                                 klienci.add(this);
@@ -238,8 +239,21 @@ public class Serwer extends JFrame{
                             if(klienci.size() == 2){
                                 //gra rozpoczyna się
                                 pakiet.setKomenda(GAME_START);
+                                pakiet.setWynikGracza1(0);
+                                pakiet.setWynikGracza2(0);
+                                pakiet.setGraTrwa(true);
+                                //wygeneruj nowa plansze z pionkami
                                 pakiet.setPionki(warcaby.getPionki());
+
+                                //przydziel kolory graczom
                                 for (Client klient : klienci) {
+                                    if(klient.getId() < klienci.lastElement().getId()){
+                                        pakiet.setKolorGracza("Biały");
+                                    }
+                                    else {
+                                        pakiet.setKolorGracza("Czarny");
+                                    }
+                                    //wyslij gotowy pakiet
                                     klient.oos.writeObject(pakiet);
                                     klient.oos.flush();
                                 }
@@ -253,27 +267,52 @@ public class Serwer extends JFrame{
                             }               
                         }
 
+
                         //polecenie logout
                         if (pakiet.getKomenda().equals(LOGOUT)) {
                             //usun klienta z listy polaczonych
                             synchronized (klienci){
+                                int temp = (int)(getId());
+
+                                klienci.remove(this);
+
+                                //klient opuscil gre w trakcie
+                                if(klienci.size() < 2) {
+                                    pakiet.setKomenda(END_OF_GAME);
+                                    //ustal id gracza i przypisz mu przegrana
+                                    if (temp > klienci.firstElement().getId()) {
+                                        pakiet.setWynikGracza1(1);
+                                        pakiet.setWynikGracza2(0);
+                                    } else {
+                                        pakiet.setWynikGracza1(0);
+                                        pakiet.setWynikGracza2(1);
+                                    }
+
+                                    //wygeneruj pusta plansze
+                                    pakiet.setPionki(warcaby.wygenerujPustaPlansze());
+                                    //wyslij pozostalemu klientowi wyniki i nowa plansze
+                                    klienci.firstElement().oos.writeObject(pakiet);
+                                }
+
+                                uzytkownicy.setText("" + klienci.size());
                                 polaczony = false;
                                 log.append("Rozłączono z użytkownikiem.\n");
-                                klienci.remove(this);
-                                uzytkownicy.setText("" + klienci.size());
                             }
                             oos.writeObject(pakiet);
                         }
+
 
                         //polecenie zakonczenia gry
                         if (pakiet.getKomenda().equals(END_OF_GAME)) {
 
                         }
 
+
                         //polecenie przesuniecia pionka
                         if (pakiet.getKomenda().equals(CHECKER_MOVE)) {
 
                         }
+
 
                         //polecenie oczekiwanie na gracza
                         if (pakiet.getKomenda().equals(WAITING_FOR_MOVE)) {

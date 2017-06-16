@@ -180,7 +180,7 @@ public class Klient extends JFrame{
                     try {
                         pakiet = (Pakiet) ois.readObject();
 
-                        //chwilowe nasluchiwanie komend
+                        //chwilowe nasluchiwanie komend od serwera
                         System.out.println(pakiet.getKomenda());
 
                         //polecenie logout
@@ -195,7 +195,13 @@ public class Klient extends JFrame{
 
                         //polecenie koniec gry
                         if (pakiet.getKomenda().equals(END_OF_GAME)) {
+                            //pobierz nowa plansze
+                            warcaby.setPionki(pakiet.getPionki());
 
+                            //pobierz wyniki
+                            wynikGracza1.setText("" + pakiet.getWynikGracza1());
+                            wynikGracza2.setText("" + pakiet.getWynikGracza2());
+                            repaint();
                         }
 
                         //polecenie przesuniecia pionka
@@ -210,7 +216,15 @@ public class Klient extends JFrame{
 
                         //polecenie rozpoeczecia nowej gry
                         if (pakiet.getKomenda().equals(GAME_START)) {
+                            //pobierz plansze
                             warcaby.setPionki(pakiet.getPionki());
+
+                            //pobierz kolor gracza
+                            warcaby.setKolorGracza(pakiet.getKolorGracza());
+
+                            //pobierz wyniki gry
+                            wynikGracza1.setText("" + pakiet.getWynikGracza1());
+                            wynikGracza2.setText("" + pakiet.getWynikGracza2());
                             repaint();
                         }
 
@@ -258,7 +272,8 @@ public class Klient extends JFrame{
                 port.setEnabled(true);
                 polacz.setEnabled(true);
                 repaint();
-            } catch (IOException e) {}
+            } catch (IOException e) {
+            }
         }
     }
 }

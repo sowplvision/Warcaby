@@ -11,6 +11,8 @@ import java.awt.event.MouseListener;
 public class Plansza extends JComponent implements MouseListener {
     private int[][] pionki;
 
+    private String kolorGracza;
+
     private int x1, x2, y1, y2;
 
     private int rozmiarPionka = Pionek.getRozmiarPionka();
@@ -30,13 +32,20 @@ public class Plansza extends JComponent implements MouseListener {
 
         pionki = new int[8][8];
 
-        for(int y = 0;y < 8; y++){
-            for(int x = 0;x < 8; x++){
-                pionki[x][y] = 0;
-            }
-        }
+        pionki  = wygenerujPustaPlansze();
 
         addMouseListener(this);
+    }
+
+    public int[][] wygenerujPustaPlansze(){
+        int temp[][] = new int[8][8];
+
+        for(int y = 0;y < 8; y++){
+            for(int x = 0;x < 8; x++){
+                temp[x][y] = 0;
+            }
+        }
+        return temp;
     }
 
     @Override
@@ -103,6 +112,14 @@ public class Plansza extends JComponent implements MouseListener {
 
     public int[][] getPionki() {
         return pionki;
+    }
+
+    public String getKolorGracza() {
+        return kolorGracza;
+    }
+
+    public void setKolorGracza(String kolorGracza) {
+        this.kolorGracza = kolorGracza;
     }
 
     public int[][] nowaGra(){
@@ -203,6 +220,10 @@ public class Plansza extends JComponent implements MouseListener {
 
     public void zbijPionek(){
 
+    }
+
+    public boolean mozliweZbicie(){
+        return true;
     }
 
     public int stworzDamke(int typPionka){

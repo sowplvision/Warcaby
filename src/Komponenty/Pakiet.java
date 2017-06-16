@@ -11,6 +11,7 @@ public class Pakiet implements Serializable {
     private int wynikGracza1;
     private int wynikGracza2;
     private String kolorGracza;
+    private boolean graTrwa;
 
     public Pakiet(){
 
@@ -58,5 +59,13 @@ public class Pakiet implements Serializable {
 
     public void setKolorGracza(String kolorGracza) {
         this.kolorGracza = kolorGracza;
+    }
+
+    public boolean isGraTrwa() {
+        return graTrwa;
+    }
+
+    public void setGraTrwa(boolean graTrwa) {
+        this.graTrwa = graTrwa;
     }
 }
