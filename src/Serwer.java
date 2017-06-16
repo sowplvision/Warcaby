@@ -243,8 +243,6 @@ public class Serwer extends JFrame{
                                 pakiet.setWynikGracza1(0);
                                 pakiet.setWynikGracza2(0);
 
-                                pakiet.setGraTrwa(true);
-
                                 pakiet.setKolejGracza("Biały");
 
                                 //wygeneruj nowa plansze z pionkami
@@ -336,38 +334,31 @@ public class Serwer extends JFrame{
                          */
 
                         if (pakiet.getKomenda().equals(MOVEMENT)) {
-                            /**
-                             if(!pakiet.getKolejGracza().equals("Czarny")){
-                             pakiet.setKolejGracza("Biały");
-                             }
-                             else {
-                             pakiet.setKolejGracza("Czarny");
-                             }
 
-                             if(pakiet.getKolejGracza().equals(pakiet.getKolorGracza())) {
-                             oos.writeObject(pakiet);
-                             oos.flush();
-                             }
-                             */
-
-                            warcaby.setPionki(pakiet.getPionki());
-                            System.out.println(pakiet.getKolejGracza());
-                            pakiet.setPionki(warcaby.getPionki());
-
-                            oos.writeObject(pakiet);
                         }
 
 
                         //polecenie oczekiwanie na gracza
                         if (pakiet.getKomenda().equals(WAITING_FOR_MOVE)) {
+
+                            warcaby.setPionki(pakiet.getPionki());
+                            warcaby.pokazSzachownice();
+
+                            //
                             if(pakiet.getKolejGracza().equals("Czarny")){
                                 pakiet.setKomenda(MOVE_BLACK);
                             }
                             if(pakiet.getKolejGracza().equals("Biały")){
                                 pakiet.setKomenda(MOVE_WHITE);
                             }
-                            oos.writeObject(pakiet);
-                            oos.flush();
+                            //wyslij komende do drugiego gracza
+                            for(Client klient: klienci){
+                                if(klient != this) {
+                                    System.out.println("NEXT MOVE: " + pakiet.getKolejGracza());
+                                    klient.oos.writeObject(pakiet);
+                                    klient.oos.flush();
+                                }
+                            }
                         }
 
                         if (pakiet.getKomenda().equals(MOVE_BLACK)) {

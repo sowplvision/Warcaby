@@ -271,14 +271,14 @@ public class Klient extends JFrame{
 
                                 while (!warcaby.getPrzesunietoPionek()) {
                                     try {
-                                        sleep(1000);
+                                        sleep(100);
                                     } catch (InterruptedException e) {
                                     }
                                 }
 
                                 warcaby.removeMouseListener();
 
-                                pakiet.setKomenda(MOVEMENT);
+                                pakiet.setKomenda(WAITING_FOR_MOVE);
                                 pakiet.setPionki(warcaby.getPionki());
                                 pakiet.setKolejGracza("Biały");
 
@@ -292,7 +292,6 @@ public class Klient extends JFrame{
                         if (pakiet.getKomenda().equals(MOVE_WHITE)) {
                             if(warcaby.getKolorGracza().equals("Biały")) {
                                 pakiet.setKolorGracza(warcaby.getKolorGracza());
-                                System.out.println(warcaby.getKolorGracza());
 
                                 System.out.println("YOUR TURN");
 
@@ -300,14 +299,14 @@ public class Klient extends JFrame{
 
                                 while (!warcaby.getPrzesunietoPionek()) {
                                     try {
-                                        sleep(1000);
+                                        sleep(100);
                                     } catch (InterruptedException e) {
                                     }
                                 }
 
                                 warcaby.removeMouseListener();
 
-                                pakiet.setKomenda(MOVEMENT);
+                                pakiet.setKomenda(WAITING_FOR_MOVE);
                                 pakiet.setPionki(warcaby.getPionki());
                                 pakiet.setKolejGracza("Czarny");
 
@@ -321,6 +320,9 @@ public class Klient extends JFrame{
                         if (pakiet.getKomenda().equals(MOVEMENT)) {
                             warcaby.setPionki(pakiet.getPionki());
                             repaint();
+
+                            pakiet.setKomenda(WAITING_FOR_MOVE);
+                            oos.writeObject(pakiet);
                         }
 
                     } catch (IOException e){
