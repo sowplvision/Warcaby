@@ -25,7 +25,6 @@ public class Klient extends JFrame{
     private Pakiet pakiet = new Pakiet();
 
     private boolean polaczony = false;
-    private String kolorGracza ;
 
     public Klient(){
         //tworzenie GUI
@@ -207,11 +206,39 @@ public class Klient extends JFrame{
                         //polecenie przesuniecia pionka
                         if (pakiet.getKomenda().equals(CHECKER_MOVE)) {
 
+                            warcaby.setPionki(pakiet.getPionki());
+                            repaint();
                         }
 
                         //polecenie oczekiwania na ruch
                         if (pakiet.getKomenda().equals(WAITING_FOR_MOVE)) {
+                            System.out.println(pakiet.getKolejGracza());
 
+                            if(pakiet.getKolejGracza().equals(warcaby.getKolorGracza())){
+                                System.out.println("YOUR TURN");
+
+                                warcaby.addMouseListener();
+
+                                while (!warcaby.getPrzesunietoPionek()){
+                                    try {
+                                        sleep(1000);
+                                    } catch (InterruptedException e) {
+                                    }
+                                }
+
+                                warcaby.removeMouseListener();
+
+                                pakiet.setKomenda(CHECKER_MOVE);
+                                pakiet.setPionki(warcaby.getPionki());
+
+                                warcaby.setPionki(pakiet.getPionki());
+                                warcaby.pokazSzachownice();
+
+                                warcaby.setPrzesunietoPionek(false);
+
+                                oos.writeObject(pakiet);
+                                oos.flush();
+                            }
                         }
 
                         //polecenie rozpoeczecia nowej gry
@@ -226,6 +253,10 @@ public class Klient extends JFrame{
                             wynikGracza1.setText("" + pakiet.getWynikGracza1());
                             wynikGracza2.setText("" + pakiet.getWynikGracza2());
                             repaint();
+
+                            pakiet.setKomenda(WAITING_FOR_MOVE);
+                            oos.writeObject(pakiet);
+                            oos.flush();
                         }
 
 

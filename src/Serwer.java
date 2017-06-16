@@ -204,7 +204,6 @@ public class Serwer extends JFrame{
         private boolean polaczony = false;
         private ObjectInputStream ois;
         private ObjectOutputStream oos;
-        private String kolorGracza = "TEST";
 
         public Client(Socket socket){
             this.socket = socket;
@@ -244,6 +243,8 @@ public class Serwer extends JFrame{
                                 pakiet.setWynikGracza2(0);
 
                                 pakiet.setGraTrwa(true);
+
+                                pakiet.setKolejGracza("Biały");
 
                                 //wygeneruj nowa plansze z pionkami
                                 pakiet.setPionki(warcaby.getPionki());
@@ -305,9 +306,11 @@ public class Serwer extends JFrame{
                                     pakiet.setPionki(warcaby.wygenerujPustaPlansze());
                                     //wyslij pozostalemu klientowi wyniki i nowa plansze
                                     klienci.firstElement().oos.writeObject(pakiet);
+                                    klienci.firstElement().oos.flush();
                                 }
                             }
                             oos.writeObject(pakiet);
+                            oos.flush();
                         }
 
 
@@ -319,16 +322,35 @@ public class Serwer extends JFrame{
 
                         //polecenie przesuniecia pionka
                         if (pakiet.getKomenda().equals(CHECKER_MOVE)) {
+                            System.out.println("MOVEMENT FROM " + pakiet.getKolorGracza());
 
+                            warcaby.setPionki(pakiet.getPionki());
+                            warcaby.pokazSzachownice();
+
+                            for (Client klient : klienci) {
+                                klient.oos.writeObject(pakiet);
+                                klient.oos.flush();
+                            }
                         }
 
 
                         //polecenie oczekiwanie na gracza
                         if (pakiet.getKomenda().equals(WAITING_FOR_MOVE)) {
+                            if(!pakiet.getKolejGracza().equals("Czarny")){
+                                pakiet.setKolejGracza("Biały");
+                            }
+                            else {
+                                pakiet.setKolejGracza("Czarny");
+                            }
 
+                            if(pakiet.getKolejGracza().equals(pakiet.getKolorGracza())) {
+                                oos.writeObject(pakiet);
+                                oos.flush();
+                            }
                         }
                     } catch (IOException e){
-                    } catch (ClassNotFoundException e){}
+                    } catch (ClassNotFoundException e){
+                    }
                 }
 
             } catch (IOException e) {

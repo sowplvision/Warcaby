@@ -12,6 +12,7 @@ public class Plansza extends JComponent implements MouseListener {
     private int[][] pionki;
 
     private String kolorGracza;
+    private boolean przesunietoPionek = false;
 
     private int x1, x2, y1, y2;
 
@@ -33,8 +34,6 @@ public class Plansza extends JComponent implements MouseListener {
         pionki = new int[8][8];
 
         pionki  = wygenerujPustaPlansze();
-
-        addMouseListener(this);
     }
 
     public int[][] wygenerujPustaPlansze(){
@@ -156,21 +155,39 @@ public class Plansza extends JComponent implements MouseListener {
         int y = e.getY()/rozmiarPola;
 
         if(pionki[x][y] == wylaczonePole) {
-            System.out.println("POLE WYŁĄCZONE");
+            //System.out.println("POLE WYŁĄCZONE");
         }
 
-        if(pionki[x][y] > wolnePole){
-            x1 = x;
-            y1 = y;
-            System.out.println("Wybrano pionek X: "+ (x1) + " Y:" + (y1));
+        if(kolorGracza.equals("Czarny")) {
+            if (pionki[x][y] == czarnyPionek || pionki[x][y] == czarnaDamka) {
+                x1 = x;
+                y1 = y;
+                //System.out.println("Wybrano pionek X: " + (x1) + " Y:" + (y1));
+            }
+        }
+
+        if(kolorGracza.equals("Biały")) {
+            if (pionki[x][y] == bialyPionek || pionki[x][y] == bialaDamka) {
+                x1 = x;
+                y1 = y;
+                //System.out.println("Wybrano pionek X: " + (x1) + " Y:" + (y1));
+            }
         }
 
         if(pionki[x][y] == wolnePole) {
             x2 = x;
             y2 = y;
-            System.out.println("Wybrano wolne pole X: " + (x2) + " Y:" + (y2));
-            przesunPionek();
+            //System.out.println("Wybrano wolne pole X: " + (x2) + " Y:" + (y2));
+            przesunietoPionek = przesunPionek();
         }
+    }
+
+    public void addMouseListener(){
+        addMouseListener(this);
+    }
+
+    public void removeMouseListener(){
+        removeMouseListener(this);
     }
 
     @Override
@@ -188,13 +205,17 @@ public class Plansza extends JComponent implements MouseListener {
 
     }
 
-    public void przesunPionek(){
+    public boolean przesunPionek(){
         //porusz czarnymi pionkami
         if(pionki[x1][y1] == czarnyPionek) {
             if (y2 - y1 == 1 && y2 - y1 == Math.abs(x2 - x1)) {
                 pionki[x2][y2] = pionki[x1][y1];
                 pionki[x2][y2] = stworzDamke(czarnyPionek);
                 pionki[x1][y1] = wolnePole;
+
+                repaint();
+
+                return true;
             }
         }
 
@@ -204,6 +225,10 @@ public class Plansza extends JComponent implements MouseListener {
                 pionki[x2][y2] = pionki[x1][y1];
                 pionki[x2][y2] = stworzDamke(bialyPionek);
                 pionki[x1][y1] = wolnePole;
+
+                repaint();
+
+                return true;
             }
         }
 
@@ -212,10 +237,21 @@ public class Plansza extends JComponent implements MouseListener {
             if (y2 - y1 == Math.abs(x2 - x1) || y1 - y2 == Math.abs(x1 - x2)) {
                 pionki[x2][y2] = pionki[x1][y1];
                 pionki[x1][y1] = wolnePole;
+
+                repaint();
+
+                return true;
             }
         }
+        return false;
+    }
 
-        repaint();
+    public void setPrzesunietoPionek(boolean przesunietoPionek) {
+        this.przesunietoPionek = przesunietoPionek;
+    }
+
+    public boolean getPrzesunietoPionek(){
+        return przesunietoPionek;
     }
 
     public void zbijPionek(){
