@@ -22,7 +22,7 @@ public class Klient extends JFrame{
     //elementy GUI
     private JTextField adres, port, wynikGracza1, wynikGracza2;
     private JButton polacz, rozlacz;
-    private JLabel statusPolaczenia;
+    private JLabel statusPolaczenia, kolorGracza;
 
     private Plansza warcaby;
     private Pakiet pakiet = new Pakiet();
@@ -44,6 +44,7 @@ public class Klient extends JFrame{
         polacz = new JButton("Połącz");
         rozlacz = new JButton("Rozłącz");
         statusPolaczenia = new JLabel("OFFLINE");
+        kolorGracza = new JLabel("");
 
         //ustawienia elementow GUI
         rozlacz.setEnabled(false);
@@ -63,6 +64,9 @@ public class Klient extends JFrame{
         JPanel ustawieniaPolaczenia = new JPanel();
         JPanel panelStatusuPolaczenia = new JPanel();
         JPanel panelWynikow = new JPanel();
+        JPanel panelDolny = new JPanel();
+        JPanel panelBoczny = new JPanel(new BorderLayout());
+        panelBoczny.setPreferredSize(new Dimension(200,400));
         warcaby = new Plansza();
 
         //dodawanie komponentow do paneli
@@ -81,10 +85,16 @@ public class Klient extends JFrame{
         panelWynikow.add(new JLabel("Gracz 2:"));
         panelWynikow.add(wynikGracza2);
 
+        panelDolny.add(new JLabel("Kolor gracza: "));
+        panelDolny.add(kolorGracza);
+
+        panelBoczny.add(panelWynikow, BorderLayout.NORTH);
+        panelBoczny.add(panelDolny, BorderLayout.SOUTH);
+
         //dodawanie paneli do okna
         add(ustawieniaPolaczenia, BorderLayout.NORTH);
         add(panelStatusuPolaczenia, BorderLayout.SOUTH);
-        add(panelWynikow, BorderLayout.EAST);
+        add(panelBoczny, BorderLayout.EAST);
         add(warcaby, BorderLayout.CENTER);
 
         //dopasowanie rozmiaru okna do zawartosci i pokazanie okna
@@ -216,6 +226,7 @@ public class Klient extends JFrame{
 
                             //pobierz kolor gracza
                             warcaby.setKolorGracza(pakiet.getKolorGracza());
+                            kolorGracza.setText(pakiet.getKolorGracza());
 
                             //pobierz wyniki gry
                             wynikGracza1.setText("" + pakiet.getWynikGracza1());
