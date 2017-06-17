@@ -13,6 +13,10 @@ public class Plansza extends JComponent implements MouseListener {
 
     private String kolorGracza;
     private boolean przesunietoPionek = false;
+    private boolean graTrwa = false;
+
+    private int pozostaleBialePionki;
+    private int pozostaleCzarnePionki;
 
     private int x1, x2, y1, y2;
 
@@ -34,6 +38,28 @@ public class Plansza extends JComponent implements MouseListener {
         pionki = new int[8][8];
 
         pionki  = wygenerujPustaPlansze();
+    }
+
+    public void sprawdzCzyTrwa(){
+        pozostaleBialePionki = 0;
+        pozostaleCzarnePionki = 0;
+
+        //policz pozostale pionki
+        for(int y = 0;y < 8; y++){
+            for(int x = 0;x < 8; x++){
+                if(pionki[x][y] == bialyPionek || pionki[x][y] == bialaDamka){
+                    pozostaleBialePionki = pozostaleBialePionki + 1;
+                }
+                if(pionki[x][y] == czarnyPionek || pionki[x][y] == czarnaDamka){
+                    pozostaleCzarnePionki = pozostaleCzarnePionki + 1;
+                }
+            }
+        }
+
+        if(pozostaleBialePionki == 0 || pozostaleCzarnePionki == 0){
+            System.out.println("END OF GAME");
+            graTrwa = false;
+        }
     }
 
     public int[][] wygenerujPustaPlansze(){
@@ -101,7 +127,7 @@ public class Plansza extends JComponent implements MouseListener {
     public void pokazSzachownice(){
         //pozawala zobaczyc stan tablicy pionki w konsoli
         for(int y = 0;y < 8;y++){
-            System.out.println("");
+            System.out.println();
             for (int x = 0;x < 8; x++){
                 System.out.print(" " + pionki[x][y]);
             }
@@ -208,27 +234,66 @@ public class Plansza extends JComponent implements MouseListener {
     public boolean przesunPionek(){
         //porusz czarnymi pionkami
         if(pionki[x1][y1] == czarnyPionek) {
-            if (y2 - y1 == 1 && y2 - y1 == Math.abs(x2 - x1)) {
-                pionki[x2][y2] = pionki[x1][y1];
-                pionki[x2][y2] = stworzDamke(czarnyPionek);
-                pionki[x1][y1] = wolnePole;
+            if (y2 - y1 <= 2 && y2 - y1 > 0 && y2 - y1 == Math.abs(x2 - x1)) {
+                if(y2 - y1 == 2) {
+                    int x = (x1 + x2) /2;
+                    int y = (y1 + y2) /2;
+                    //System.out.println("WROG X:" + x + "Y:" + y);
 
-                repaint();
+                    if(mozliweZbicie(x,y)){
+                        zbijPionek(x,y);
 
-                return true;
+                        pionki[x2][y2] = pionki[x1][y1];
+                        pionki[x2][y2] = stworzDamke(czarnyPionek);
+                        pionki[x1][y1] = wolnePole;
+
+                        repaint();
+
+                        return true;
+                    }
+                }
+
+                if(y2 - y1 == 1) {
+                    pionki[x2][y2] = pionki[x1][y1];
+                    pionki[x2][y2] = stworzDamke(czarnyPionek);
+                    pionki[x1][y1] = wolnePole;
+
+                    repaint();
+
+                    return true;
+                }
             }
         }
 
         //porusz bialymi pionkami
         if (pionki[x1][y1] == bialyPionek) {
-            if (y1 - y2 == 1 && y1 - y2 == Math.abs(x1 - x2)) {
-                pionki[x2][y2] = pionki[x1][y1];
-                pionki[x2][y2] = stworzDamke(bialyPionek);
-                pionki[x1][y1] = wolnePole;
+            if (y1 - y2 <= 2 && y1 - y2 > 0 && y1 - y2 == Math.abs(x1 - x2)) {
+                if(y1 - y2 == 2){
+                    int x = (x1 + x2) /2;
+                    int y = (y1 + y2) /2;
+                    //System.out.println("WROG X:" + x + "Y:" + y);
 
-                repaint();
+                    if(mozliweZbicie(x,y)){
+                        zbijPionek(x,y);
 
-                return true;
+                        pionki[x2][y2] = pionki[x1][y1];
+                        pionki[x2][y2] = stworzDamke(bialyPionek);
+                        pionki[x1][y1] = wolnePole;
+
+                        repaint();
+
+                        return true;
+                    }
+                }
+                if(y1 - y2 == 1){
+                    pionki[x2][y2] = pionki[x1][y1];
+                    pionki[x2][y2] = stworzDamke(bialyPionek);
+                    pionki[x1][y1] = wolnePole;
+
+                    repaint();
+
+                    return true;
+                }
             }
         }
 
@@ -254,12 +319,22 @@ public class Plansza extends JComponent implements MouseListener {
         return przesunietoPionek;
     }
 
-    public void zbijPionek(){
-
+    public void zbijPionek(int x, int y){
+        pionki[x][y] = wolnePole;
     }
 
-    public boolean mozliweZbicie(){
-        return true;
+    public boolean mozliweZbicie(int x, int y){
+        if(kolorGracza.equals("Biały")){
+            if(pionki[x][y] == czarnyPionek || pionki[x][y] == czarnaDamka){
+                return true;
+            }
+        }
+        if(kolorGracza.equals("Czarny")){
+            if(pionki[x][y] == bialyPionek || pionki[x][y] == bialaDamka){
+                return true;
+            }
+        }
+        return false;
     }
 
     public int stworzDamke(int typPionka){
@@ -273,5 +348,13 @@ public class Plansza extends JComponent implements MouseListener {
             nowytypPionka = czarnaDamka;
         }
         return nowytypPionka;
+    }
+
+    public boolean isGraTrwa() {
+        return graTrwa;
+    }
+
+    public void setGraTrwa(boolean graTrwa) {
+        this.graTrwa = graTrwa;
     }
 }

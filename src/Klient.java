@@ -198,13 +198,16 @@ public class Klient extends JFrame{
                             warcaby.setPionki(pakiet.getPionki());
 
                             //pobierz wyniki
-                            wynikGracza1.setText("" + pakiet.getWynikGracza1());
-                            wynikGracza2.setText("" + pakiet.getWynikGracza2());
+                            wynikGracza1.setText("" + (Integer.parseInt(wynikGracza1.getText()) + pakiet.getWynikGracza1()));
+                            wynikGracza2.setText("" + (Integer.parseInt(wynikGracza2.getText()) + pakiet.getWynikGracza2()));
                             repaint();
                         }
 
                         //polecenie rozpoeczecia nowej gry
                         if (pakiet.getKomenda().equals(GAME_START)) {
+                            //rozpocznij gre
+                            warcaby.setGraTrwa(true);
+
                             //pobierz plansze
                             warcaby.setPionki(pakiet.getPionki());
 
@@ -234,7 +237,7 @@ public class Klient extends JFrame{
                                 warcaby.addMouseListener();
 
                                 //oczekiwanie na ruch
-                                while (!warcaby.getPrzesunietoPionek()) {
+                                while (!warcaby.getPrzesunietoPionek() && polaczony && warcaby.isGraTrwa()) {
                                     try {
                                         sleep(100);
                                     } catch (InterruptedException e) {
@@ -244,15 +247,21 @@ public class Klient extends JFrame{
                                 //po wykonaniu ruchu nie nasluchuj wiecej planszy
                                 warcaby.removeMouseListener();
 
-                                //przygotuj pakiet
-                                pakiet.setKomenda(WAITING_FOR_MOVE);
-                                pakiet.setPionki(warcaby.getPionki());
+                                warcaby.sprawdzCzyTrwa();
 
-                                if(pakiet.getKolejGracza().equals("Czarny")) {
-                                    pakiet.setKolejGracza("Biały");
+                                if(warcaby.isGraTrwa()) {
+                                    //przygotuj pakiet
+                                    pakiet.setKomenda(WAITING_FOR_MOVE);
+                                    pakiet.setPionki(warcaby.getPionki());
+
+                                    if (pakiet.getKolejGracza().equals("Czarny")) {
+                                        pakiet.setKolejGracza("Biały");
+                                    } else {
+                                        pakiet.setKolejGracza("Czarny");
+                                    }
                                 }
                                 else {
-                                    pakiet.setKolejGracza("Czarny");
+                                    pakiet.setKomenda(END_OF_GAME);
                                 }
 
                                 //wyslij zmieniona plansza

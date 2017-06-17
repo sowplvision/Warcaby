@@ -247,7 +247,7 @@ public class Serwer extends JFrame{
                                 pakiet.setKolejGracza("Biały");
 
                                 //wygeneruj nowa plansze z pionkami
-                                pakiet.setPionki(warcaby.getPionki());
+                                pakiet.setPionki(warcaby.nowaGra());
 
                                 //przydziel kolory graczom
                                 for (Client klient : klienci) {
@@ -269,6 +269,7 @@ public class Serwer extends JFrame{
                             //kazdy nadmiarowy gracz
                             if(klienci.size() > 2){
                                 pakiet.setKomenda(FULL_SERVER);
+                                log.append("Do serwera próbował połączyć się kolejny użytkownik.\n");
                                 oos.writeObject(pakiet);
                                 oos.flush();
                             }               
@@ -318,7 +319,21 @@ public class Serwer extends JFrame{
 
                         //polecenie zakonczenia gry
                         if (pakiet.getKomenda().equals(END_OF_GAME)) {
+                            if (pakiet.getKolejGracza().equals("Biały")) {
+                                pakiet.setWynikGracza1(1);
+                                pakiet.setWynikGracza2(0);
 
+                                log.append("Zwycięża gracz 1.\n");
+                            } else {
+                                pakiet.setWynikGracza1(0);
+                                pakiet.setWynikGracza2(1);
+
+                                log.append("Zwycięża gracz 2.\n");
+                            }
+                            for (Client klient : klienci){
+                                klient.oos.writeObject(pakiet);
+                                klient.oos.flush();
+                            }
                         }
 
 
@@ -332,6 +347,38 @@ public class Serwer extends JFrame{
                                 klient.oos.flush();
                             }
                         }
+
+                        if (pakiet.getKomenda().equals(GAME_START)) {
+                            if(klienci.size() == 2){
+                                //gra rozpoczyna się
+                                pakiet.setKomenda(GAME_START);
+
+                                pakiet.setWynikGracza1(0);
+                                pakiet.setWynikGracza2(0);
+
+                                pakiet.setKolejGracza("Biały");
+
+                                //wygeneruj nowa plansze z pionkami
+                                pakiet.setPionki(warcaby.nowaGra());
+
+                                //przydziel kolory graczom
+                                for (Client klient : klienci) {
+                                    if(klient.getId() < klienci.lastElement().getId()){
+                                        kolorGracza = "Biały";
+                                        pakiet.setKolorGracza(kolorGracza);
+                                    }
+                                    else {
+                                        kolorGracza = "Czarny";
+                                        pakiet.setKolorGracza(kolorGracza);
+                                    }
+                                    //wyslij gotowy pakiet
+                                    klient.oos.writeObject(pakiet);
+                                    klient.oos.flush();
+                                }
+                                log.append("Nowa gra rozpoczyna się.\n");
+                            }
+                        }
+
                     } catch (IOException e){
                     } catch (ClassNotFoundException e){
                     }
