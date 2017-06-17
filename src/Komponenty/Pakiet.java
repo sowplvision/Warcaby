@@ -4,7 +4,11 @@ import java.io.Serializable;
 
 /**
  * Created by Daniel K on 2017-06-13.
+ * Obiekt ktory słuzy do komunikacji pomiedzy klientem a serwerem, przesylane sa nim wyniki, polecenie dla klienta
+ * lub serwera, kolor gracza otrzymany od serwera oraz ktory gracz treaz ma swoja kolej a takze zapis planszy w postaci
+ * tablicy dwuwymiarowej typu int.
  */
+
 public class Pakiet implements Serializable {
     private int[][] pionki;
     private String komenda;

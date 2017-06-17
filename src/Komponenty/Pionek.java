@@ -5,7 +5,11 @@ import java.awt.*;
 
 /**
  * Created by Daniel K on 2017-06-13.
+ * Klasa ta tworzy pojedynczy pionek otrzymanego typu (String typ) ktory jest rysowany w wybranym polu (int x,y)
+ * Rysuje ona wypelnione okregi nachodzace na siebie aby dac wizualnie przyjemny obraz pionka w srodku podanego w
+ * konstruktorze pola o wspolrzednych x i y.
  */
+
 public class Pionek extends JComponent {
     private static final int rozmiarPionka = 48;
     private int x,y;

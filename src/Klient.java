@@ -14,7 +14,10 @@ import java.net.UnknownHostException;
 
 /**
  * Created by Daniel K on 2017-06-13.
+ * Klasa tworzaca interfejs GUI klienta oraz wszelkie z nim zwiazane zdarzenia, komunikuje się ona z Serwerem i
+ * wymienia z nim Pakiety wysylajac w nich odpowiednie tresci oraz polecenia dla innych graczy
  */
+
 public class Klient extends JFrame{
     //elementy GUI
     private JTextField adres, port, wynikGracza1, wynikGracza2;

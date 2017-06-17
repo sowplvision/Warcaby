@@ -2,7 +2,10 @@ package Komponenty;
 
 /**
  * Created by Daniel K on 2017-06-15.
+ * To interfejst zawierajacy wszystkie polecenia dla serwera oraz klienta ktore wysyłane są poprzez obiekt Pakiet,
+ * słuzu do kontrolowania serwera i klienta oraz wplywania na akcje ktore powinni podejmowac w danej sytuacji.
  */
+
 public interface Protokol {
     public static final String LOGIN = "LOGIN";
     public static final String LOGOUT = "LOGOUT";

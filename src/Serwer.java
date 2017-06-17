@@ -16,7 +16,11 @@ import java.util.Vector;
 
 /**
  * Created by Daniel K on 2017-06-13.
+ * Klasa tworzaca interfejs serwera a takze przyjmujaca polaczenia od klientow i komunikujaca sie z nimi, wysyla i odbiera
+ * Pakiety a takze informuje o przebiegu polaczenia z klientami. Wplywa takze na ich rozgrywke informujac o kolejnosci ruchu
+ * drugiego gracza. Konieczna w komunikacji klient-klient.
  */
+
 public class Serwer extends JFrame{
     //elementy GUI
     private JTextArea log;
