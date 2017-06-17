@@ -356,8 +356,10 @@ public class Plansza extends JComponent implements MouseListener {
         if(pionki[x1][y1] == czarnaDamka || pionki[x1][y1] == bialaDamka) {
             if (y2 - y1 == Math.abs(x2 - x1) || y1 - y2 == Math.abs(x1 - x2)) {
 
+                //wektory przemieszczania
                 int wektorX, wektorY;
 
+                //ustal wektor przemieszczenia sie damki - wlasciwie to kierunek na osi X/Y
                 if(x1 > x2){
                     wektorX = -1;
                 }
@@ -372,33 +374,23 @@ public class Plansza extends JComponent implements MouseListener {
                     wektorY = 1;
                 }
 
-                /**
-                int temp[][] = wygenerujPustaPlansze();
-                temp[x1][y1] = pionki[x1][y1];
-                temp[x2][y2] = pionki[x1][y1];
-                 */
-
+                //pozycja poczatkowa damki
                 int x3 = x1;
                 int y3 = y1;
 
+                //sprawdzaj pokonana droge przez damke i zbijaj pionki po drodze az do nowej pozycji damki
                 for(int i = 0;i < Math.abs(x1 - x2); i++){
+                    //przesun sprawdzana pozycje o wektor
                     x3 += wektorX;
                     y3 += wektorY;
-                    System.out.println("X: " + x3 + " Y: " + y3);
+
+                    //System.out.println("DAMKA POKONUJE POLE X: " + x3 + " Y: " + y3);
+
+                    //sprawdz zbijanie i zbij pionek jesli jest mozliwosc
                     if(mozliweZbicie(x3,y3)){
                         zbijPionek(x3,y3);
                     }
                 }
-
-                /**
-                for(int y = 0;y < 8;y++){
-                    System.out.println();
-                    for (int x = 0;x < 8; x++){
-                        System.out.print(" " + temp[x][y]);
-                    }
-                }
-                System.out.println();
-                 */
 
                 //przesun damke w wybrane pole
                 pionki[x2][y2] = pionki[x1][y1];
