@@ -22,7 +22,7 @@ public class Klient extends JFrame{
     //elementy GUI
     private JTextField adres, port, wynikGracza1, wynikGracza2;
     private JButton polacz, rozlacz;
-    private JLabel statusPolaczenia, kolorGracza;
+    private JLabel statusPolaczenia, kolorGracza, tura;
 
     private Plansza warcaby;
     private Pakiet pakiet = new Pakiet();
@@ -45,6 +45,7 @@ public class Klient extends JFrame{
         rozlacz = new JButton("Rozłącz");
         statusPolaczenia = new JLabel("OFFLINE");
         kolorGracza = new JLabel("");
+        tura = new JLabel("");
 
         //ustawienia elementow GUI
         rozlacz.setEnabled(false);
@@ -64,7 +65,9 @@ public class Klient extends JFrame{
         JPanel ustawieniaPolaczenia = new JPanel();
         JPanel panelStatusuPolaczenia = new JPanel();
         JPanel panelWynikow = new JPanel();
-        JPanel panelDolny = new JPanel();
+        JPanel panelTur = new JPanel();
+        JPanel panelKolorGracza = new JPanel();
+        JPanel panelPrawyDolny = new JPanel(new BorderLayout());
         JPanel panelBoczny = new JPanel(new BorderLayout());
         panelBoczny.setPreferredSize(new Dimension(200,400));
         warcaby = new Plansza();
@@ -85,11 +88,16 @@ public class Klient extends JFrame{
         panelWynikow.add(new JLabel("Gracz 2:"));
         panelWynikow.add(wynikGracza2);
 
-        panelDolny.add(new JLabel("Kolor gracza: "));
-        panelDolny.add(kolorGracza);
+        panelKolorGracza.add(new JLabel("Kolor gracza: "));
+        panelKolorGracza.add(kolorGracza);
+
+        panelTur.add(tura);
+
+        panelPrawyDolny.add(panelKolorGracza, BorderLayout.CENTER);
+        panelPrawyDolny.add(panelTur, BorderLayout.SOUTH);
 
         panelBoczny.add(panelWynikow, BorderLayout.NORTH);
-        panelBoczny.add(panelDolny, BorderLayout.SOUTH);
+        panelBoczny.add(panelPrawyDolny, BorderLayout.SOUTH);
 
         //dodawanie paneli do okna
         add(ustawieniaPolaczenia, BorderLayout.NORTH);
@@ -245,7 +253,8 @@ public class Klient extends JFrame{
                                 warcaby.setPionki(pakiet.getPionki());
                                 repaint();
 
-                                System.out.println("YOUR TURN");
+                                //System.out.println("YOUR TURN");
+                                tura.setText("TWOJA KOLEJ");
 
                                 //nasluchiwanie poruszania
                                 warcaby.addMouseListener();
@@ -285,6 +294,7 @@ public class Klient extends JFrame{
 
                                 //pozwol kolejnemu graczowi na ruch
                                 warcaby.setPrzesunietoPionek(false);
+                                tura.setText("");
                             }
                         }
                     } catch (IOException e){
